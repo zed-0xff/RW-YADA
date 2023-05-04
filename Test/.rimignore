@@ -1,0 +1,8 @@
+# comment
+.gitignore
+bin
+obj
+
+*.swp
+Rakefil*
+testdir2*

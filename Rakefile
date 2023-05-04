@@ -21,3 +21,10 @@ task :release do
   system "dotnet build -c Release", exception: true
   Dir.chdir ".."
 end
+
+desc "test"
+task :test do
+  Dir.chdir "Test"
+  system "rake"
+  Dir.chdir ".."
+end
