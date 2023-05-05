@@ -25,6 +25,6 @@ public class ModConfig : Mod {
 
     public override string SettingsCategory() => "YADA";
 
-    private static Vector2 scrollPosition = Vector2.zero;
-    private int PageIndex = 0;
+//    private static Vector2 scrollPosition = Vector2.zero;
+//    private int PageIndex = 0;
 }

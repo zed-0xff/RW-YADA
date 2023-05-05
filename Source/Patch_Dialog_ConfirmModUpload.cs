@@ -45,10 +45,12 @@ static class Patch__Dialog_ConfirmModUpload__DoWindowContents {
 
     // need to pass it from Prefix to Postfix
     public static ScanResult lastScan;
+    public static int lastWindowID;
 
-    static void scanMod(DirectoryInfo rootDir, bool force = false){
-        if( lastScan.rootDir == rootDir.FullName && !force )
+    static void scanMod(DirectoryInfo rootDir){
+        if( lastWindowID == Find.WindowStack.currentlyDrawnWindow.ID )
             return;
+        lastWindowID = Find.WindowStack.currentlyDrawnWindow.ID;
 
         lastScan = new ScanResult(rootDir.FullName);
         Scanner.ScanDir(rootDir, delegate(FileSystemInfo fsi){
@@ -71,7 +73,6 @@ static class Patch__Dialog_ConfirmModUpload__DoWindowContents {
                         Path.Combine(ModConfig.RootDir, Scanner.rimignoreFname),
                         Path.Combine(___mod.RootDir.FullName, Scanner.rimignoreFname)
                         );
-                scanMod(___mod.RootDir, force: true); // do rescan of same mod
                 Find.WindowStack.Add( new Dialog_ConfirmModUpload(___mod, __instance.buttonAAction) );
             };
         }
