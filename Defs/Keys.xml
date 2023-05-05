@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <KeyBindingDef ParentName="DevelopmentKeyBinding">
+    <defName>YADA_ToggleDebugLog</defName>
+    <label>toggle YADA log</label>
+    <defaultKeyCodeA>160</defaultKeyCodeA> <!-- "§" -->
+  </KeyBindingDef>
+
+</Defs>
