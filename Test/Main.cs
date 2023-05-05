@@ -21,3 +21,12 @@ string GetRelativePath(string parent, string child){
 
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine("[=] ALL OK!");
+
+namespace Verse {
+    public static class Log {
+        public static void Warning(string s){
+            //Console.WriteLine(s);
+        }
+    }
+}
+

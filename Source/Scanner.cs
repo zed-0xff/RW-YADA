@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-//using Verse; // only for Log()
+using Verse; // only for Log()
 
 namespace zed_0xff.YADA;
 
@@ -19,6 +19,10 @@ public class Scanner {
         ScanDir(dir, action, ignores);
     }
 
+    public static List<string> ReadIgnores(string fname){
+        return ReadIgnores(new FileInfo(fname));
+    }
+
     public static List<string> ReadIgnores(FileInfo fi){
         List<string> ignores = new List<string>();
         using (StreamReader sr = fi.OpenText()) {
@@ -33,7 +37,7 @@ public class Scanner {
         return ignores;
     }
 
-    public static void ScanDir(DirectoryInfo dir, Action<FileSystemInfo> action, List<string> ignores ){
+    public static void ScanDir(DirectoryInfo dir, Action<FileSystemInfo> action, List<string> ignores, bool logIgnored = false ){
         List<string> localIgnores = new List<string>();
         localIgnores.AddRange(ignores);
         foreach( FileInfo fi in dir.GetFiles(rimignoreFname) ){
@@ -46,10 +50,16 @@ public class Scanner {
         foreach( string glob in localIgnores ){
             if( glob.Contains("*") || glob.Contains("?") ){
                 foreach( var fsi in dir.GetFileSystemInfos(glob) ){
-                    files.Remove(fsi.Name);
+                    if(files.ContainsKey(fsi.Name)){
+                        if( logIgnored ) Log.Warning("[.] YADA: unnecessary " + (fsi is FileInfo ? "file" : "dir") + ": " + files[fsi.Name].FullName);
+                        files.Remove(fsi.Name);
+                    }
                 }
             } else {
-                files.Remove(glob);
+                if(files.ContainsKey(glob)){
+                    if( logIgnored ) Log.Warning("[.] YADA: unnecessary " + (files[glob] is FileInfo ? "file" : "dir") + ": " + files[glob].FullName);
+                    files.Remove(glob);
+                }
             }
         }
         foreach( FileSystemInfo fsi in files.Values ){
