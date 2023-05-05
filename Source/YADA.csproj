@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>zed_0xff.YADA</RootNamespace>
     <TargetFramework>net472</TargetFramework>
-    <LangVersion>10</LangVersion>
+    <LangVersion>11</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

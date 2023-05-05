@@ -14,23 +14,15 @@ static class Patch__Dialog_ConfirmModUpload__DoWindowContents {
 
     public struct ScanResult {
         public bool hasRimIgnore;
-        public int ignoredFiles;
-        public long ignoredSize;
         public int totalFiles;
         public long totalSize;
         public int badFiles;
         public long badSize;
+        public string rootDir;
+        public string tempUploadDir;
 
-        public static ScanResult operator +(ScanResult a, ScanResult b){
-            ScanResult sr = new ScanResult();
-            sr.hasRimIgnore = a.hasRimIgnore || b.hasRimIgnore;
-            sr.ignoredFiles = a.ignoredFiles + b.ignoredFiles;
-            sr.ignoredSize = a.ignoredSize + b.ignoredSize;
-            sr.totalFiles = a.totalFiles + b.totalFiles;
-            sr.totalSize = a.totalSize + b.totalSize;
-            sr.badFiles = a.badFiles + b.badFiles;
-            sr.badSize = a.badSize + b.badSize;
-            return sr;
+        public ScanResult(string r){
+            rootDir = r;
         }
     }
 
@@ -44,18 +36,20 @@ static class Patch__Dialog_ConfirmModUpload__DoWindowContents {
         }
     }
 
-    private static ScanResult sr;
+    // need to pass it from Prefix to Postfix
+    public static ScanResult lastScan;
 
     static void Prefix(Rect inRect, ref ModMetaData ___mod, ref Dialog_ConfirmModUpload __instance){
-        sr = new ScanResult();
+        lastScan = new ScanResult(___mod.RootDir.FullName);
         Scanner.ScanDir(___mod.RootDir, delegate(FileSystemInfo fsi){
                 if( fsi is FileInfo fi) {
-                  sr.totalFiles++;
-                  sr.totalSize += fi.Length;
+                  lastScan.totalFiles++;
+                  lastScan.totalSize += fi.Length;
+                  lastScan.hasRimIgnore = lastScan.hasRimIgnore || (fsi is FileInfo && fsi.Name == Scanner.rimignoreFname);
                 }
                 });
-        sr.hasRimIgnore = File.Exists(Path.Combine(___mod.RootDir.ToString(), Scanner.rimignoreFname));
-        if( !sr.hasRimIgnore ){
+        lastScan.hasRimIgnore = lastScan.hasRimIgnore || File.Exists(Path.Combine(___mod.RootDir.ToString(), Scanner.rimignoreFname));
+        if( !lastScan.hasRimIgnore ){
             __instance.buttonCText = ("Add " + Scanner.rimignoreFname).Colorize(new Color(0,0.8f,0));
         }
     }
@@ -64,13 +58,13 @@ static class Patch__Dialog_ConfirmModUpload__DoWindowContents {
         Vector2 topLeft = new Vector2(inRect.x + 10f, inRect.height - 35 - 24 - 10);
         GenUI.SetLabelAlign(TextAnchor.MiddleRight);
 
-        string sizeString = formatSize(sr.totalSize);
+        string sizeString = formatSize(lastScan.totalSize);
         var r = new Rect(topLeft.x + inRect.width / 2, topLeft.y + (24 - Text.LineHeight) / 2f, inRect.width / 2f - 24, 24);
 
-        if( sr.hasRimIgnore ){
+        if( lastScan.hasRimIgnore ){
             GUI.color = Color.green;
         } else {
-            if( sr.badSize == 0 && sr.badFiles == 0 ){
+            if( lastScan.badSize == 0 && lastScan.badFiles == 0 ){
                 GUI.color = Color.yellow;
             } else {
                 GUI.color = Color.red;
@@ -80,11 +74,7 @@ static class Patch__Dialog_ConfirmModUpload__DoWindowContents {
         Widgets.Label(r, "Size".Translate().CapitalizeFirst() + ": " + sizeString);
         GUI.color = Color.white;
 
-        TooltipHandler.TipRegion(r, sr.totalSize + " bytes in " + sr.totalFiles + " files");
+        TooltipHandler.TipRegion(r, lastScan.totalSize + " bytes in " + lastScan.totalFiles + " files");
         GenUI.ResetLabelAlign();
-
-//        List<FloatMenuOption> list = new List<FloatMenuOption>();
-//        list.Add( new FloatMenuOption("foo", delegate{}) );
-//        Find.WindowStack.Add(new FloatMenu(list));
     }
 }

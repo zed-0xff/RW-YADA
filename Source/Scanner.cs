@@ -16,22 +16,28 @@ public class Scanner {
 
     public static void ScanDir( DirectoryInfo dir, Action<FileSystemInfo> action ){
         var ignores = new List<string>();
-        _ScanDir(dir, action, ignores);
+        ScanDir(dir, action, ignores);
     }
 
-    public static void _ScanDir(DirectoryInfo dir, Action<FileSystemInfo> action, List<string> ignores ){
+    public static List<string> ReadIgnores(FileInfo fi){
+        List<string> ignores = new List<string>();
+        using (StreamReader sr = fi.OpenText()) {
+            var s = "";
+            while ((s = sr.ReadLine()) != null) {
+                s = s.Trim();
+                if( !s.StartsWith("#") && s != "" ){
+                    ignores.Add(s);
+                }
+            }
+        }
+        return ignores;
+    }
+
+    public static void ScanDir(DirectoryInfo dir, Action<FileSystemInfo> action, List<string> ignores ){
         List<string> localIgnores = new List<string>();
         localIgnores.AddRange(ignores);
         foreach( FileInfo fi in dir.GetFiles(rimignoreFname) ){
-            using (StreamReader sr = fi.OpenText()) {
-                var s = "";
-                while ((s = sr.ReadLine()) != null) {
-                    s = s.Trim();
-                    if( !s.StartsWith("#") && s != "" ){
-                        localIgnores.Add(s);
-                    }
-                }
-            }
+            localIgnores.AddRange(ReadIgnores(fi));
         }
         Dictionary<string, FileSystemInfo> files = new Dictionary<string, FileSystemInfo>();
         foreach( var fi in dir.GetFileSystemInfos() ){
@@ -49,7 +55,7 @@ public class Scanner {
         foreach( FileSystemInfo fsi in files.Values ){
             action(fsi);
             if ( fsi is DirectoryInfo di ){
-                _ScanDir(di, action, localIgnores);
+                ScanDir(di, action, localIgnores);
             }
         }
     }

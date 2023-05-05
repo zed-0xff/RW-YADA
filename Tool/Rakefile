@@ -1,0 +1,12 @@
+task default: :test
+
+desc "test"
+task :test do
+  system "dotnet build . --nologo -v q", exception: true
+  system "./bin/Debug/net7.0/Tool"
+end
+
+desc "clean"
+task :clean do
+  system "rm -rf bin obj", exception: true
+end
