@@ -3,12 +3,23 @@
   <name>YADA</name>
   <author>zed_0xff</author>
   <packageId>zed.0xff.YADA</packageId>
+  <url>https://github.com/zed-0xff/RW-YADA</url>
   <supportedVersions>
     <li>1.4</li>
   </supportedVersions>
-  <description>YADA
+  <description>YADA: Yet Another Dev Assistant
 
-[url=https://ko-fi.com/K3K81Z3W5][img]https://i.imgur.com/Utx6OIH.png[/img][/url]
+1. .rimignore
+Now you can filter files you upload to Steam, similar to .gitignore.
+Add default .rimignore file to your mod with a single click.
+
+2. mod size is now shown before upload
+
+3. All dev flags are now saved with the game
+Like "god mode", "unlimited power", all draw flags, etc etc.
+Only if dev mode is on.
+
+4. [url=https://ko-fi.com/K3K81Z3W5][img]https://i.imgur.com/Utx6OIH.png[/img][/url] [url=https://github.com/zed-0xff/RW-YADA]github[/url]
 </description>
   <modDependencies>
       <li>
