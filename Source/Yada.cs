@@ -1,5 +1,3 @@
-using RimWorld;
-using UnityEngine;
 using Verse;
 using RimWorld.Planet;
 using System.Reflection;
