@@ -46,8 +46,6 @@ class Yada : WorldComponent {
         base.ExposeData();
         if( !Prefs.DevMode ) return;
 
-        Log.Warning("[d] scribe " + Scribe.mode);
-
         switch (Scribe.mode){
             case LoadSaveMode.Saving:
                 Save(typeof(DebugSettings));

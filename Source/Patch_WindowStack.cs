@@ -9,8 +9,8 @@ using Verse;
 
 namespace zed_0xff.YADA;
 
-[HarmonyPatch(typeof(Window), nameof(Window.ExtraOnGUI))]
-static class Patch_ExtraOnGUI {
+[HarmonyPatch(typeof(WindowStack), nameof(WindowStack.WindowStackOnGUI))]
+static class Patch_WindowStackOnGUI {
     static void Postfix(){
         if( !ModConfig.Settings.drawLogOverlay ) return;
         if( Event.current.type != EventType.Repaint ) return;
