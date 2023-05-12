@@ -1,5 +1,3 @@
-using RimWorld;
-using UnityEngine;
 using Verse;
 using RimWorld.Planet;
 using System.Reflection;
@@ -50,10 +48,12 @@ class Yada : WorldComponent {
             case LoadSaveMode.Saving:
                 Save(typeof(DebugSettings));
                 Save(typeof(DebugViewSettings));
+                Save(typeof(Yada_DebugSettings));
                 break;
             case LoadSaveMode.LoadingVars:
                 Load(typeof(DebugSettings));
                 Load(typeof(DebugViewSettings));
+                Load(typeof(Yada_DebugSettings));
                 LongEventHandler.QueueLongEvent(delegate
                         {
                         var opener = (DebugWindowsOpener)UIRoot_DebugWindowsOpener.GetValue(Find.UIRoot);

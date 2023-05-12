@@ -1,6 +1,3 @@
-using System.IO;
-using System;
-
 namespace zed_0xff.YADA;
 
 public class RimIgnore {

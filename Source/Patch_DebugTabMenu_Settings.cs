@@ -1,18 +1,11 @@
 using HarmonyLib;
-using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using Verse;
 
 namespace zed_0xff.YADA;
 
 // hook immediate debug view settings change
 
-//[HarmonyPatch]
-//static class Patch_DebugTabMenu_Settings {
+static class Patch_DebugTabMenu_Settings {
 //    public static MethodBase TargetMethod()
 //    {
 //        Type[] nestedTypes = typeof(DebugTabMenu_Settings).GetNestedTypes(AccessTools.all);
@@ -51,4 +44,14 @@ namespace zed_0xff.YADA;
 //        origMethod.Invoke(fi, new object[] { obj, value } );
 //        Log.Warning("[d] " + fi + "|" + obj + "=" + value );
 //    }
-//}
+    [HarmonyPatch(typeof(DebugTabMenu_Settings), "InitActions")]
+    static class Patch_InitActions {
+        static void Postfix(DebugTabMenu_Settings __instance) {
+            foreach (var fieldInfo in typeof(Yada_DebugSettings).GetFields())
+            {
+                __instance.AddNode(fieldInfo, "YADA");
+            }
+        }
+    }
+}
+
