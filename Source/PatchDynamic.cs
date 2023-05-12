@@ -9,21 +9,6 @@ namespace zed_0xff.YADA;
 
 public class PatchDynamic {
 
-    public static bool r0 (ref float __result){
-        __result = 1.2f;
-        return false;
-    }
-
-    public static bool r1 (ref float __result){
-        __result = 1.2f;
-        return true;
-    }
-
-    public static bool r2 (float __result){
-        __result = 1.2f;
-        return true;
-    }
-
     public static void PatchAll(){
         Harmony harmony = new Harmony("zed_0xff.YADA");
         var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("yada_dyn_ass"), AssemblyBuilderAccess.Run);
@@ -53,6 +38,24 @@ public class PatchDynamic {
                         il.Emit(OpCodes.Ldc_R4, (float)patchDef.prefix.setResultObj);
                         il.Emit(OpCodes.Stind_R4);
                         il.Emit( patchDef.prefix.skipOriginal ? OpCodes.Ldc_I4_0 : OpCodes.Ldc_I4_1 );
+                        il.Emit(OpCodes.Ret);
+                    } else {
+                        Log.Error("[!] YADA: Unimplemented");
+                    }
+                }
+            }
+
+            if( patchDef.postfix != null ){
+                MethodBuilder mb = tb.DefineMethod("Postfix",
+                        MethodAttributes.Public | MethodAttributes.Static,
+                        null, new Type[] { patchDef.resultType.MakeByRefType() });
+                if( patchDef.postfix.setResult != null ){
+                    mb.DefineParameter(1, ParameterAttributes.None, "__result");
+                    if( patchDef.resultType == typeof(float) ){
+                        ILGenerator il = mb.GetILGenerator();
+                        il.Emit(OpCodes.Ldarg_0);
+                        il.Emit(OpCodes.Ldc_R4, (float)patchDef.postfix.setResultObj);
+                        il.Emit(OpCodes.Stind_R4);
                         il.Emit(OpCodes.Ret);
                     } else {
                         Log.Error("[!] YADA: Unimplemented");

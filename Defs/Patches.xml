@@ -3,9 +3,8 @@
   <zed_0xff.YADA.PatchDef>
     <className>Need</className>
     <methodName>get_CurLevel</methodName>
-    <prefix>
-      <setResult>0.2</setResult>
-      <skipOriginal>true</skipOriginal>
-    </prefix>
+    <postfix>
+      <setResult>0.4</setResult>
+    </postfix>
   </zed_0xff.YADA.PatchDef>
 </Defs>
