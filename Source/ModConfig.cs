@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using UnityEngine;
 
@@ -7,23 +9,23 @@ namespace zed_0xff.YADA;
 public class YADASettings : ModSettings {
     public bool drawLogOverlay = false;
 
-    public int logX = 0;
-    public int logY = 0;
+    public int logX = 8;
+    public int logY = 105;
     public int logW = 1024;
-    public int logH = 768;
-    public float logHue = 0.5f;
-    public float logOpa = 0.5f;
-    public float logLineSpacing = 0.9f;
+    public int logH = 732;
+    public float logHue = 0.75f;
+    public float logOpa = 0.89f;
+    public float logLineSpacing = 0.88f;
 
     public override void ExposeData() {
         Scribe_Values.Look(ref drawLogOverlay, "drawLogOverlay", false);
-        Scribe_Values.Look(ref logX, "log.x", 0);
-        Scribe_Values.Look(ref logY, "log.y", 0);
+        Scribe_Values.Look(ref logX, "log.x", 8);
+        Scribe_Values.Look(ref logY, "log.y", 105);
         Scribe_Values.Look(ref logW, "log.width", 1024);
-        Scribe_Values.Look(ref logH, "log.height", 768);
-        Scribe_Values.Look(ref logHue, "log.hue", 0.5f);
-        Scribe_Values.Look(ref logOpa, "log.opacity", 0.5f);
-        Scribe_Values.Look(ref logLineSpacing, "log.lineSpacing", 0.9f);
+        Scribe_Values.Look(ref logH, "log.height", 732);
+        Scribe_Values.Look(ref logHue, "log.hue", 0.75f);
+        Scribe_Values.Look(ref logOpa, "log.opacity", 0.89f);
+        Scribe_Values.Look(ref logLineSpacing, "log.lineSpacing", 0.88f);
         base.ExposeData();
     }
 }
@@ -40,17 +42,100 @@ public class ModConfig : Mod {
     }
 
     public override void DoSettingsWindowContents(Rect inRect) {
+        var tabRect = new Rect(inRect) {
+            y = inRect.y + 40f
+        };
+        var mainRect = new Rect(inRect) {
+            height = inRect.height - 40f,
+            y = inRect.y + 40f
+        };
+
+        Widgets.DrawMenuSection(mainRect);
+
+        var tabs = new List<TabRecord> {
+//            new TabRecord("General".Translate(), () => { PageIndex = 0; WriteSettings(); }, PageIndex == 0),
+            new TabRecord("Log overlay", () => { PageIndex = 1; WriteSettings(); }, PageIndex == 1),
+        };
+
+        TabDrawer.DrawTabs(tabRect, tabs);
+
+        switch (PageIndex)
+        {
+            case 0:
+                draw_general(mainRect.ContractedBy(15f));
+                break;
+            case 1:
+                draw_log(mainRect.ContractedBy(15f));
+                break;
+            default:
+                break;
+        }
+    }
+
+    void draw_general(Rect inRect){
+    }
+
+    // from Dialog_KeyBindings.cs
+    private void SettingButtonClicked(KeyBindingDef keyDef, KeyPrefs.BindingSlot slot)
+    {
+        if (Event.current.button == 0)
+        {
+            Find.WindowStack.Add(new Dialog_DefineBinding(KeyPrefs.KeyPrefsData, keyDef, slot));
+            Event.current.Use();
+        }
+        else if (Event.current.button == 1)
+        {
+            List<FloatMenuOption> list = new List<FloatMenuOption>();
+            list.Add(new FloatMenuOption("ResetBinding".Translate(), delegate
+                        {
+                        KeyCode keyCode = ((slot == KeyPrefs.BindingSlot.A) ? keyDef.defaultKeyCodeA : keyDef.defaultKeyCodeB);
+                        KeyPrefs.KeyPrefsData.SetBinding(keyDef, slot, keyCode);
+                        }));
+            list.Add(new FloatMenuOption("ClearBinding".Translate(), delegate
+                        {
+                        KeyPrefs.KeyPrefsData.SetBinding(keyDef, slot, KeyCode.None);
+                        }));
+            Find.WindowStack.Add(new FloatMenu(list));
+        }
+    }
+
+    // from Dialog_KeyBindings.cs
+    private void DrawKeyEntry(KeyBindingDef keyDef, Rect parentRect, string label) {
+        Rect rect = new Rect(parentRect.x, parentRect.y, parentRect.width, 34f);
+//        GenUI.SetLabelAlign(TextAnchor.MiddleLeft);
+        Widgets.Label(rect, label);
+//        GenUI.ResetLabelAlign();
+        float num = 4f;
+        Vector2 vector = new Vector2(140f, 28f);
+        Rect rect2 = new Rect(rect.x + rect.width - vector.x * 2f - num, rect.y, vector.x, vector.y);
+        Rect rect3 = new Rect(rect.x + rect.width - vector.x, rect.y, vector.x, vector.y);
+        string key = "BindingButtonToolTip";
+        TooltipHandler.TipRegionByKey(rect2, key);
+        TooltipHandler.TipRegionByKey(rect3, key);
+        if (Widgets.ButtonText(rect2, KeyPrefs.KeyPrefsData.GetBoundKeyCode(keyDef, KeyPrefs.BindingSlot.A).ToStringReadable()))
+        {
+            SettingButtonClicked(keyDef, KeyPrefs.BindingSlot.A);
+        }
+        if (Widgets.ButtonText(rect3, KeyPrefs.KeyPrefsData.GetBoundKeyCode(keyDef, KeyPrefs.BindingSlot.B).ToStringReadable()))
+        {
+            SettingButtonClicked(keyDef, KeyPrefs.BindingSlot.B);
+        }
+    }
+
+    void draw_log(Rect inRect){
         Listing_Standard l = new Listing_Standard();
         l.Begin(inRect);
-        l.CheckboxLabeled("drawLogOverlay", ref Settings.drawLogOverlay);
 
-        l.Label("log X: " + Settings.logX); Settings.logX = (int)l.Slider(Settings.logX, 0, UI.screenWidth - 100);
-        l.Label("log Y: " + Settings.logY); Settings.logY = (int)l.Slider(Settings.logY, 0, UI.screenHeight - 100);
-        l.Label("log W: " + Settings.logW); Settings.logW = (int)l.Slider(Settings.logW, 100, UI.screenWidth);
-        l.Label("log H: " + Settings.logH); Settings.logH = (int)l.Slider(Settings.logH, 100, UI.screenHeight);
-        l.Label("log hue: " + Math.Round(Settings.logHue,2)); Settings.logHue = l.Slider(Settings.logHue, 0, 1);
-        l.Label("log opacity: " + Math.Round(Settings.logOpa,2)); Settings.logOpa = l.Slider(Settings.logOpa, 0, 1);
-        l.Label("log line spacing: " + Math.Round(Settings.logLineSpacing,2));
+        DrawKeyEntry(VDefOf.YADA_ToggleDebugLog, l.GetRect(34f), "Hotkey (default is \"§\")");
+        l.CheckboxLabeled("Draw log overlay", ref Settings.drawLogOverlay);
+
+        l.Label("X: " + Settings.logX); Settings.logX = (int)l.Slider(Settings.logX, 0, UI.screenWidth - 100);
+        l.Label("Y: " + Settings.logY); Settings.logY = (int)l.Slider(Settings.logY, 0, UI.screenHeight - 100);
+        l.Label("W: " + Settings.logW); Settings.logW = (int)l.Slider(Settings.logW, 100, UI.screenWidth);
+        l.Label("H: " + Settings.logH); Settings.logH = (int)l.Slider(Settings.logH, 100, UI.screenHeight);
+        l.Label("hue: " + Math.Round(Settings.logHue,2)); Settings.logHue = l.Slider(Settings.logHue, 0, 1);
+        l.Label("opacity: " + Math.Round(Settings.logOpa,2)); Settings.logOpa = l.Slider(Settings.logOpa, 0, 1);
+        l.Label("line spacing: " + Math.Round(Settings.logLineSpacing,2));
         Settings.logLineSpacing = l.Slider(Settings.logLineSpacing, 0.5f, 2);
 
         l.End();
@@ -58,7 +143,5 @@ public class ModConfig : Mod {
     }
 
     public override string SettingsCategory() => "YADA";
-
-//    private static Vector2 scrollPosition = Vector2.zero;
-//    private int PageIndex = 0;
+    private int PageIndex = 1;
 }

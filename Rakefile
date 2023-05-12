@@ -2,6 +2,7 @@ require 'fileutils'
 require 'set'
 
 task default: [:release, :clean, :list]
+task mod: [:release]
 
 desc "clean"
 task :clean do
