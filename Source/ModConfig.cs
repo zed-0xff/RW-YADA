@@ -17,6 +17,8 @@ public class YADASettings : ModSettings {
     public float logOpa = 0.89f;
     public float logLineSpacing = 0.88f;
 
+    public bool saveDebugLogAutoOpen = true;
+
     public override void ExposeData() {
         Scribe_Values.Look(ref drawLogOverlay, "drawLogOverlay", false);
         Scribe_Values.Look(ref logX, "log.x", 8);
@@ -26,6 +28,8 @@ public class YADASettings : ModSettings {
         Scribe_Values.Look(ref logHue, "log.hue", 0.75f);
         Scribe_Values.Look(ref logOpa, "log.opacity", 0.89f);
         Scribe_Values.Look(ref logLineSpacing, "log.lineSpacing", 0.88f);
+
+        Scribe_Values.Look(ref saveDebugLogAutoOpen, "saveDebugLogAutoOpen", true);
         base.ExposeData();
     }
 }
@@ -53,7 +57,7 @@ public class ModConfig : Mod {
         Widgets.DrawMenuSection(mainRect);
 
         var tabs = new List<TabRecord> {
-//            new TabRecord("General".Translate(), () => { PageIndex = 0; WriteSettings(); }, PageIndex == 0),
+            new TabRecord("General".Translate(), () => { PageIndex = 0; WriteSettings(); }, PageIndex == 0),
             new TabRecord("Log overlay", () => { PageIndex = 1; WriteSettings(); }, PageIndex == 1),
         };
 
@@ -70,9 +74,16 @@ public class ModConfig : Mod {
             default:
                 break;
         }
+        base.DoSettingsWindowContents(inRect);
     }
 
     void draw_general(Rect inRect){
+        Listing_Standard l = new Listing_Standard();
+        l.Begin(inRect);
+
+        l.CheckboxLabeled("Save DebugLog auto-open value", ref Settings.saveDebugLogAutoOpen);
+
+        l.End();
     }
 
     // from Dialog_KeyBindings.cs
@@ -139,9 +150,8 @@ public class ModConfig : Mod {
         Settings.logLineSpacing = l.Slider(Settings.logLineSpacing, 0.5f, 2);
 
         l.End();
-        base.DoSettingsWindowContents(inRect);
     }
 
     public override string SettingsCategory() => "YADA";
-    private int PageIndex = 1;
+    private int PageIndex = 0;
 }

@@ -37,7 +37,8 @@ class Yada : WorldComponent {
         }
     }
 
-    public static FieldInfo UIRoot_DebugWindowsOpener = AccessTools.Field(typeof(UIRoot), "debugWindowOpener");
+    public static FieldInfo fiDebugWindowsOpener = AccessTools.Field(typeof(UIRoot), "debugWindowOpener");
+    private static FieldInfo fiCanAutoOpen = AccessTools.Field(typeof(EditWindow_Log), "canAutoOpen");
 
     public override void ExposeData()
     {
@@ -49,20 +50,29 @@ class Yada : WorldComponent {
                 Save(typeof(DebugSettings));
                 Save(typeof(DebugViewSettings));
                 Save(typeof(Yada_DebugSettings));
+                if( ModConfig.Settings.saveDebugLogAutoOpen ){
+                    bool b = (bool)fiCanAutoOpen.GetValue(null);
+                    Scribe_Values.Look(ref b, "EditWindow_Log.canAutoOpen", forceSave: true);
+                }
                 break;
             case LoadSaveMode.LoadingVars:
                 Load(typeof(DebugSettings));
                 Load(typeof(DebugViewSettings));
                 Load(typeof(Yada_DebugSettings));
+                if( ModConfig.Settings.saveDebugLogAutoOpen ){
+                    bool b = true;
+                    Scribe_Values.Look(ref b, "EditWindow_Log.canAutoOpen", true);
+                    fiCanAutoOpen.SetValue(null, b);
+                }
+                break;
+            case LoadSaveMode.PostLoadInit:
                 LongEventHandler.QueueLongEvent(delegate
                         {
-                        var opener = (DebugWindowsOpener)UIRoot_DebugWindowsOpener.GetValue(Find.UIRoot);
+                        var opener = (DebugWindowsOpener)fiDebugWindowsOpener.GetValue(Find.UIRoot);
                         if( opener != null ){
                             opener.TryOpenOrClosePalette();
                         }
                         }, null, doAsynchronously: false, null);
-                break;
-            case LoadSaveMode.PostLoadInit:
                 break;
         }
 
