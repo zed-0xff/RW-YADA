@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <zed_0xff.YADA.PatchDef>
+    <defName>foo</defName>
+    <className>c1</className>
+  </zed_0xff.YADA.PatchDef>
+</Defs>
