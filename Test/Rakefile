@@ -3,7 +3,7 @@ task default: :test
 desc "test"
 task :test do
   system "dotnet build . --nologo -v q", exception: true
-  system "./bin/Debug/net7.0/Test"
+  system "./bin/Debug/net7.0/Test", exception: true
 end
 
 desc "clean"

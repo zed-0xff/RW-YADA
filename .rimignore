@@ -9,12 +9,14 @@
 .idea
 .vs
 Thumbs.db
+obj
 
 *.bak
 *.cache
 *.lnk
 *.pdb
 *.swp
+*.tmp
 
 *.BuildWithSkipAnalyzers
 *.CopyComplete
