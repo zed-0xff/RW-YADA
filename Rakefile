@@ -2,7 +2,7 @@ require 'fileutils'
 require 'set'
 
 task default: [:release, :clean, :list]
-task mod: [:release]
+task release: [:test, :mod]
 
 desc "clean"
 task :clean do
@@ -13,8 +13,8 @@ task :clean do
   end
 end
 
-desc "release"
-task :release do
+desc "build mod"
+task :mod do
   Dir.chdir "Source"
   system "dotnet build -c Release", exception: true
   Dir.chdir ".."

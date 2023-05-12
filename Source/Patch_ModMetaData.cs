@@ -38,10 +38,8 @@ static class Patch_PrepareForWorkshopUpload {
             Scanner.ScanDir(__instance.RootDir, delegate(FileSystemInfo fsi){
                     string target = Path.Combine(tempUploadDir, GetRelativePath(__instance.RootDir.FullName, fsi.FullName));
                     if( fsi is DirectoryInfo di ){
-                        Log.Warning("[d] mkdir " + target);
                         Directory.CreateDirectory(target);
                     } else if( fsi is FileInfo fi ){
-                        Log.Warning("[d] cp " + fi.FullName + " " + target);
                         File.Copy(fi.FullName, target);
                     } else {
                         Log.Warning("[?] YADA: unexpected " + fsi);
