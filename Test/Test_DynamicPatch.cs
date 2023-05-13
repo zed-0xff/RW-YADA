@@ -32,65 +32,34 @@ class Test_DynamicPatch {
         var m = type.GetMethod("foo", BindingFlags.Static | BindingFlags.Public);
         Expect.NZ(m);
 
-        m.Invoke(null, new object[]{ });
+        var args = new object[]{ };
+        Expect.Z(m.Invoke(null, args));
+        Expect.Eq(args.Count(), 0);
     }
 
-    static void test_int(){
-        var dp = new_dp(typeof(int));
+    static void test(Type type, object initial_value, object setResultObj ){
+        var dp = new_dp(type);
         var prefix = new PatchDef.Prefix();
-        prefix.setResult = "1";
-        prefix.setResultObj = 1;
+        prefix.setResult = setResultObj.ToString();
+        prefix.setResultObj = setResultObj;
         var m0 = dp.MakeMethod("foo", prefix);
         Expect.NZ(m0);
-        var type = dp.CreateType();
 
-        var m = type.GetMethod("foo", BindingFlags.Static | BindingFlags.Public);
+        var m = dp.CreateType().GetMethod("foo", BindingFlags.Static | BindingFlags.Public);
         Expect.NZ(m);
 
-        var args = new object[]{ 33 };
-        m.Invoke(null, args);
-        Expect.Eq(args[0], 1);
-    }
-
-    static void test_float(){
-        var dp = new_dp(typeof(float));
-        var prefix = new PatchDef.Prefix();
-        prefix.setResult = "1.2";
-        prefix.setResultObj = 1.2f;
-        var m0 = dp.MakeMethod("foo", prefix);
-        Expect.NZ(m0);
-        var type = dp.CreateType();
-
-        var m = type.GetMethod("foo", BindingFlags.Static | BindingFlags.Public);
-        Expect.NZ(m);
-
-        var args = new object[]{ 5.5f };
-        m.Invoke(null, args);
-        Expect.Eq(args[0], 1.2f);
-    }
-
-    static void test_string(){
-        var dp = new_dp(typeof(string));
-        var prefix = new PatchDef.Prefix();
-        prefix.setResult = "hi";
-        prefix.setResultObj = "hi";
-        var m0 = dp.MakeMethod("foo", prefix);
-        Expect.NZ(m0);
-        var type = dp.CreateType();
-
-        var m = type.GetMethod("foo", BindingFlags.Static | BindingFlags.Public);
-        Expect.NZ(m);
-
-        var args = new object[]{ "bye" };
-        m.Invoke(null, args);
-        Expect.Eq(args[0], "hi");
+        var args = new object[]{ initial_value };
+        Expect.Z(m.Invoke(null, args));
+        Expect.Eq(args[0], setResultObj);
+        Expect.Eq(args[0].GetType(), type);
     }
 
     public static void Run(){
         Console.WriteLine("[.] Running Test_DynamicPatch");
         test_nop();
-        test_int();
-        test_float();
-        test_string();
+        test(typeof(string), "hi", "bye");
+        test(typeof(float), 1.1f, 222f);
+        test(typeof(int), 12, 555);
+        test(typeof(long), 0L, 5555555555L);
     }
 }
