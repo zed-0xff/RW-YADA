@@ -14,19 +14,18 @@ public class PatchDef : Def {
     public enum PatchType { Undefined, Prefix, Postfix }
     public enum ActionType { None, LogValue, ReturnConst }
 
-    public class Prefix {
-        public bool skipOriginal;
+    public abstract class Somefix {
         public string setResult;
 
         [Unsaved(false)]
         public object setResultObj;
     }
 
-    public class Postfix {
-        public string setResult;
+    public class Prefix : Somefix {
+        public bool skipOriginal;
+    }
 
-        [Unsaved(false)]
-        public object setResultObj;
+    public class Postfix : Somefix {
     }
 
     public string className;

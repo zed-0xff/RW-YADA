@@ -6,3 +6,4 @@ obj
 *.swp
 Rakefil*
 testdir2*
+Test_*.cs
