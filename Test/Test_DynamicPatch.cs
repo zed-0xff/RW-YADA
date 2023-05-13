@@ -86,6 +86,8 @@ class Test_DynamicPatch {
         test(typeof(float), 1.1f, 222f);
         test(typeof(int), 12, 555);
         test(typeof(long), 0L, 5555555555L);
+        test(typeof(bool), false, true);
+        test(typeof(bool), true, false);
 
         fixPrefix = delegate(PatchDef.Prefix prefix) { prefix.skipOriginal = true; };
         test_null(false);

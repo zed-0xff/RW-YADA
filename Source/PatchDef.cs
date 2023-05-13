@@ -7,14 +7,30 @@ using Verse;
 namespace zed_0xff.YADA;
 
 // Field 'PatchDef.className' is never assigned to / never used
-#pragma warning disable CS0649, CS0169
+#pragma warning disable CS0649, CS0169, CS0414
 
 public class PatchDef : Def {
 
-    public enum PatchType { Undefined, Prefix, Postfix }
-    public enum ActionType { None, LogValue, ReturnConst }
+    public string HarmonyPriority;
+    public List<string> HarmonyBefore;
+    public List<string> HarmonyAfter;
+    public bool HarmonyDebug;
+    public string HarmonyPatchCategory;
 
-    private static string UndefinedResult = "19746_XXX_UNDEFINED_XXX_21831";
+    public string className;
+    public string methodName;
+
+    public Prefix prefix;
+    public Postfix postfix;
+
+    public DebugSettingsCheckbox debugSettingsCheckbox;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public class DebugSettingsCheckbox {
+        public bool defaultValue;
+        public string category = "YADA";
+    }
 
     public abstract class Anyfix {
         public string setResult = UndefinedResult;
@@ -33,11 +49,6 @@ public class PatchDef : Def {
         }
     }
 
-    public string HarmonyPriority;
-    public List<string> HarmonyBefore;
-    public List<string> HarmonyAfter;
-    public bool HarmonyDebug;
-
     public class Prefix : Anyfix {
         public bool skipOriginal;
     }
@@ -45,20 +56,19 @@ public class PatchDef : Def {
     public class Postfix : Anyfix {
     }
 
-    public string className;
-    public string methodName;
-
-    public Prefix prefix;
-    public Postfix postfix;
-
+    private static readonly string UndefinedResult = "19746_XXX_UNDEFINED_XXX_21831";
     private static int unnamedIdx = 0;
 
     [Unsaved(false)]
     public Type resultType;
 
+    [Unsaved(false)]
+    private bool autoDefName;
+
     public override void PostLoad() {
         if( defName == "UnnamedDef" ){
             defName = "YADA_dynamic_patch__" + unnamedIdx++ + "__" + className + "__" + methodName;
+            autoDefName = true;
         }
         if( prefix != null ) prefix.PostLoad();
         if( postfix != null ) postfix.PostLoad();
@@ -72,6 +82,7 @@ public class PatchDef : Def {
         if (className == null) yield return "className should be set";
         if (methodName == null) yield return "methodName should be set";
         if (prefix == null && postfix == null) yield return "no prefix nor postfix is set";
+        if (debugSettingsCheckbox != null && autoDefName) yield return "debugSettingsCheckbox needs explicit PatchDef.defName";
 
         Type t = AccessTools.TypeByName(className);
         if( t == null ){
@@ -109,4 +120,3 @@ public class PatchDef : Def {
     }
 }
 
-#pragma warning restore CS0649, CS0169

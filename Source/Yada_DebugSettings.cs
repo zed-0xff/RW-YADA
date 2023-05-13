@@ -14,12 +14,4 @@ public class Yada_DebugSettings {
     /// See <see cref="Patch_Need_CurLevel.Patch_Getter.Postfix">Patch_Need_CurLevel</see> for implementation details
     /// </remarks>
     public static bool freezeNeedsAtMaximum = false;
-
-    /// <summary>
-    /// Disables automatic undrafting of drafted-but-idle pawns
-    /// </summary>
-    /// <remarks>
-    /// See <see cref="Patch_AutoUndrafter_ShouldAutoUndraft.Postfix">Patch_AutoUndrafter_ShouldAutoUndraft</see> for implementation details
-    /// </remarks>
-    public static bool disableAutomaticUndraft = false;
 }

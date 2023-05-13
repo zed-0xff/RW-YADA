@@ -50,6 +50,7 @@ class Yada : WorldComponent {
                 Save(typeof(DebugSettings));
                 Save(typeof(DebugViewSettings));
                 Save(typeof(Yada_DebugSettings));
+                Save(DynamicPatch.dynamicSettingsContainer);
                 if( ModConfig.Settings.saveDebugLogAutoOpen ){
                     bool b = (bool)fiCanAutoOpen.GetValue(null);
                     Scribe_Values.Look(ref b, "EditWindow_Log.canAutoOpen", forceSave: true);
@@ -59,6 +60,7 @@ class Yada : WorldComponent {
                 Load(typeof(DebugSettings));
                 Load(typeof(DebugViewSettings));
                 Load(typeof(Yada_DebugSettings));
+                Load(DynamicPatch.dynamicSettingsContainer);
                 if( ModConfig.Settings.saveDebugLogAutoOpen ){
                     bool b = true;
                     Scribe_Values.Look(ref b, "EditWindow_Log.canAutoOpen", true);

@@ -18,6 +18,10 @@ class Test_PatchDef {
         return "hi";
     }
 
+    private bool test_bool(){
+        return false;
+    }
+
     private static void test_result_type(string typeName, Type t){
         PatchDef pd = new PatchDef();
         pd.className = "Test_PatchDef";
@@ -92,6 +96,7 @@ class Test_PatchDef {
         test_result_type("int", typeof(int));
         test_result_type("float", typeof(float));
         test_result_type("string", typeof(string));
+        test_result_type("bool", typeof(bool));
         test_xml();
     }
 }

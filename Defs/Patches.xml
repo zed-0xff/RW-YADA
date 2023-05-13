@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <YADA.PatchDef>
-    <!--HarmonyDebug>true</HarmonyDebug-->
+    <defName>YADA_disableAutomaticUndraft</defName>
+    <label>Disable automatic undraft</label>
+
+    <className>AutoUndrafter</className>
+    <methodName>ShouldAutoUndraft</methodName>
+    <postfix>
+      <setResult>false</setResult>
+    </postfix>
+
+    <debugSettingsCheckbox/>
+  </YADA.PatchDef>
+
+  <YADA.PatchDef>
+    <defName>YADA_freezeNeedsAtMaximum</defName>
+    <label>Freeze needs at maximum</label>
+
     <HarmonyPriority>555</HarmonyPriority>
     <HarmonyAfter>
       <li>foo</li>
@@ -13,6 +28,7 @@
       <li>bar</li>
       <li>baz</li>
     </HarmonyBefore>
+
     <className>Need</className>
     <methodName>get_CurLevel</methodName>
     <prefix>
@@ -22,5 +38,10 @@
     <postfix>
       <setResult>0.4</setResult>
     </postfix>
+
+    <debugSettingsCheckbox>
+      <defaultValue>false</defaultValue>
+      <category>YADA</category>
+    </debugSettingsCheckbox>
   </YADA.PatchDef>
 </Defs>
