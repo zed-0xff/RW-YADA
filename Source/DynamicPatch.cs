@@ -41,23 +41,26 @@ public class DynamicPatch {
     }
 
     // TODO: make it better
-    private bool emitResult(ILGenerator il, PatchDef.Somefix somefix){
-        // FIXME: how to return null?
-        if( somefix.setResult == null ) return true;
+    private bool emitResult(ILGenerator il, PatchDef.Anyfix anyfix){
+        if( anyfix.setResultObj == null && !anyfix.isResultNull ) return true;
 
         il.Emit(OpCodes.Ldarg_0);
 
-        if( patchDef.resultType == typeof(float) ){
-            il.Emit(OpCodes.Ldc_R4, (float)somefix.setResultObj);
+        if( anyfix.isResultNull ){
+            // return null
+            il.Emit(OpCodes.Ldnull);
+            il.Emit(OpCodes.Stind_Ref);
+        } else if( patchDef.resultType == typeof(float) ){
+            il.Emit(OpCodes.Ldc_R4, (float)anyfix.setResultObj);
             il.Emit(OpCodes.Stind_R4);
         } else if( patchDef.resultType == typeof(int) ){
-            il.Emit(OpCodes.Ldc_I4, (int)somefix.setResultObj);
+            il.Emit(OpCodes.Ldc_I4, (int)anyfix.setResultObj);
             il.Emit(OpCodes.Stind_I4);
         } else if( patchDef.resultType == typeof(long) ){
-            il.Emit(OpCodes.Ldc_I8, (long)somefix.setResultObj);
+            il.Emit(OpCodes.Ldc_I8, (long)anyfix.setResultObj);
             il.Emit(OpCodes.Stind_I8);
         } else if( patchDef.resultType == typeof(string) ){
-            il.Emit(OpCodes.Ldstr, (string)somefix.setResultObj);
+            il.Emit(OpCodes.Ldstr, (string)anyfix.setResultObj);
             il.Emit(OpCodes.Stind_Ref);
         } else {
             Log.Error("[!] YADA: unsupported resultType " + patchDef.resultType);
@@ -67,7 +70,7 @@ public class DynamicPatch {
         return true;
     }
 
-    public MethodBuilder MakeMethod(string methodName, PatchDef.Somefix somefix){
+    public MethodBuilder MakeMethod(string methodName, PatchDef.Anyfix anyfix){
 //        var mstub = AccessTools.Method(this.GetType(), "stub", new Type[]{ patchDef.resultType.MakeByRefType() } );
 //        if( mstub == null ){
 //            Log.Error("[!] YADA: cannot get stub method for " + patchDef.resultType);
@@ -75,18 +78,19 @@ public class DynamicPatch {
 //        }
 //
 //        var instructions = PatchProcessor.GetOriginalInstructions(mstub);
-        bool skipOriginal = somefix is PatchDef.Prefix prefix && prefix.skipOriginal;
+        bool skipOriginal = anyfix is PatchDef.Prefix prefix && prefix.skipOriginal;
+        bool hasArgument = anyfix.setResultObj != null || anyfix.isResultNull;
 
-        Type[] args = (somefix.setResult != null) ? (new Type[] { patchDef.resultType.MakeByRefType() }) : new Type[]{};
+        Type[] args = hasArgument ? (new Type[] { patchDef.resultType.MakeByRefType() }) : new Type[]{};
         Type retType = skipOriginal ? typeof(bool) : null;
         MethodBuilder mb = tb.DefineMethod(methodName, MethodAttributes.Public | MethodAttributes.Static, retType, args);
 
-        if( somefix.setResult != null ){
+        if( hasArgument ){
             mb.DefineParameter(1, ParameterAttributes.None, "__result");
         }
 
         ILGenerator il = mb.GetILGenerator();
-        if(!emitResult(il, somefix)) return null;
+        if(!emitResult(il, anyfix)) return null;
         if( skipOriginal ){
             il.Emit( OpCodes.Ldc_I4_0 ); // returns false in Prefix()
         }

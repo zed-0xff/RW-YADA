@@ -14,18 +14,30 @@ public class PatchDef : Def {
     public enum PatchType { Undefined, Prefix, Postfix }
     public enum ActionType { None, LogValue, ReturnConst }
 
-    public abstract class Somefix {
-        public string setResult;
+    private static string UndefinedResult = "19746_XXX_UNDEFINED_XXX_21831";
+
+    public abstract class Anyfix {
+        public string setResult = UndefinedResult;
 
         [Unsaved(false)]
         public object setResultObj;
+        [Unsaved(false)]
+        public bool isResultNull;
+
+        public void PostLoad(){
+            if( setResult == UndefinedResult )
+                setResult = null;
+            else if( setResult == null ){
+                isResultNull = true;
+            }
+        }
     }
 
-    public class Prefix : Somefix {
+    public class Prefix : Anyfix {
         public bool skipOriginal;
     }
 
-    public class Postfix : Somefix {
+    public class Postfix : Anyfix {
     }
 
     public string className;
@@ -43,6 +55,8 @@ public class PatchDef : Def {
         if( defName == "UnnamedDef" ){
             defName = "YADA_dynamic_patch__" + unnamedIdx++ + "__" + className + "__" + methodName;
         }
+        if( prefix != null ) prefix.PostLoad();
+        if( postfix != null ) postfix.PostLoad();
         base.PostLoad();
     }
 
@@ -67,22 +81,25 @@ public class PatchDef : Def {
         resultType = m.ReturnType;
 
         if (prefix != null){
-            if( prefix.setResult != null ){
-                if( !ParseHelper.CanParse(resultType, prefix.setResult) ){
-                    yield return "can't parse \"" + prefix.setResult + "\" as " + resultType;
-                    yield break;
-                }
-                prefix.setResultObj = ConvertHelper.Convert(prefix.setResult, resultType);
-            }
+            var err = check_anyfix(prefix);
+            if( err != null) yield return err;
         }
         if (postfix != null){
-            if( postfix.setResult != null ){
-                if( !ParseHelper.CanParse(resultType, postfix.setResult) ){
-                    yield return "can't parse \"" + postfix.setResult + "\" as " + resultType;
-                    yield break;
+            var err = check_anyfix(postfix);
+            if( err != null) yield return err;
+        }
+
+        string check_anyfix(Anyfix a){
+            if( a.setResult == null ){
+                a.setResultObj = null;
+                a.setResult = null;
+            } else {
+                if( !ParseHelper.CanParse(resultType, a.setResult) ){
+                    return "can't parse \"" + a.setResult + "\" as " + resultType;
                 }
-                postfix.setResultObj = ConvertHelper.Convert(postfix.setResult, resultType);
+                a.setResultObj = ConvertHelper.Convert(a.setResult, resultType);
             }
+            return null;
         }
     }
 }

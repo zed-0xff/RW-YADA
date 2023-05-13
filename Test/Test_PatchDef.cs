@@ -35,19 +35,56 @@ class Test_PatchDef {
     }
 
     private static void test_xml(){
-        PatchDef pd = DirectXmlLoader.ItemFromXmlString<PatchDef>(@"
-                <PatchDef>
-                    <defName>foo</defName>
-                    <className>Test_PatchDef</className>
-                    <methodName>test_float</methodName>
-                    <prefix>
-                        <setResult>0.4</setResult>
-                    </prefix>
-                </PatchDef>
-                ", "", false);
+        {
+            PatchDef pd = DirectXmlLoader.ItemFromXmlString<PatchDef>(@"
+                    <PatchDef>
+                        <className>Test_PatchDef</className>
+                        <methodName>test_float</methodName>
+                        <prefix>
+                            <setResult>0.4</setResult>
+                        </prefix>
+                    </PatchDef>
+                    ", "", false);
+            pd.PostLoad();
 
-        Expect.Eq( pd.ConfigErrors().Count(), 0, delegate{ foreach( var x in pd.ConfigErrors() ){ Console.WriteLine("    " + x); } } );
-        DefDatabase<PatchDef>.Add(pd);
+            Expect.Eq( pd.ConfigErrors().Count(), 0, delegate{ foreach( var x in pd.ConfigErrors() ){ Console.WriteLine("    " + x); } } );
+            Expect.Eq( pd.postfix, null );
+            Expect.Eq( pd.prefix.isResultNull, false );
+            Expect.Eq( pd.prefix.setResultObj, 0.4f );
+
+            DefDatabase<PatchDef>.Add(pd);
+        }
+        {
+            PatchDef pd = DirectXmlLoader.ItemFromXmlString<PatchDef>(@"
+                    <PatchDef>
+                        <className>Test_PatchDef</className>
+                        <methodName>test_string</methodName>
+                        <prefix>
+                            <skipOriginal>true</skipOriginal>
+                        </prefix>
+                    </PatchDef>
+                    ", "", false);
+            pd.PostLoad();
+            Expect.Eq( pd.prefix.skipOriginal, true );
+            Expect.Eq( pd.prefix.setResult, null );
+            Expect.Eq( pd.prefix.setResultObj, null );
+            Expect.Eq( pd.prefix.isResultNull, false );
+        }
+        {
+            PatchDef pd = DirectXmlLoader.ItemFromXmlString<PatchDef>(@"
+                    <PatchDef>
+                        <className>Test_PatchDef</className>
+                        <methodName>test_string</methodName>
+                        <prefix>
+                            <setResult IsNull=""true"" />
+                        </prefix>
+                    </PatchDef>
+                    ", "", false);
+            pd.PostLoad();
+            Expect.Eq( pd.prefix.setResult, null );
+            Expect.Eq( pd.prefix.setResultObj, null );
+            Expect.Eq( pd.prefix.isResultNull, true ); // <-------------
+        }
     }
 
     public static void Run(){

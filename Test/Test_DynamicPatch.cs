@@ -37,6 +37,24 @@ class Test_DynamicPatch {
         Expect.Eq(args.Count(), 0);
     }
 
+    static void test_null(){
+        var dp = new_dp(typeof(string));
+        var prefix = new PatchDef.Prefix();
+        prefix.setResult = null;
+        prefix.setResultObj = null;
+        prefix.isResultNull = true;
+        var m0 = dp.MakeMethod("foo", prefix);
+        Expect.NZ(m0);
+        var type = dp.CreateType();
+
+        var m = type.GetMethod("foo", BindingFlags.Static | BindingFlags.Public);
+        Expect.NZ(m);
+
+        var args = new object[]{ "hi" };
+        Expect.Z(m.Invoke(null, args));
+        Expect.Eq(args[0], null);
+    }
+
     static void test(Type type, object initial_value, object setResultObj ){
         var dp = new_dp(type);
         var prefix = new PatchDef.Prefix();
@@ -57,6 +75,7 @@ class Test_DynamicPatch {
     public static void Run(){
         Console.WriteLine("[.] Running Test_DynamicPatch");
         test_nop();
+        test_null();
         test(typeof(string), "hi", "bye");
         test(typeof(float), 1.1f, 222f);
         test(typeof(int), 12, 555);

@@ -20,6 +20,12 @@ task :mod do
   Dir.chdir ".."
 end
 
+task :debug do
+  Dir.chdir "Source"
+  system "dotnet build -c Debug", exception: true
+  Dir.chdir ".."
+end
+
 desc "test"
 task :test do
   Dir.chdir "Test"

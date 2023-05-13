@@ -12,7 +12,7 @@ public static class Expect {
         }
     }
 
-    public static void Eq(Object a, Object b, Action? dd = null){
+    public static void Eq(object? a, object? b, Action? dd = null){
         string ja = JsonSerializer.Serialize(a);
         string jb = JsonSerializer.Serialize(b);
         if( ja != jb ){
