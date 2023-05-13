@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-  <zed_0xff.YADA.PatchDef>
+  <YADA.PatchDef>
     <!--HarmonyDebug>true</HarmonyDebug-->
     <HarmonyPriority>555</HarmonyPriority>
     <HarmonyAfter>
@@ -22,5 +22,5 @@
     <postfix>
       <setResult>0.4</setResult>
     </postfix>
-  </zed_0xff.YADA.PatchDef>
+  </YADA.PatchDef>
 </Defs>
