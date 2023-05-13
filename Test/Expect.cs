@@ -25,7 +25,7 @@ public static class Expect {
         }
     }
 
-    public static void NZ(Object a, string msg = "object"){
+    public static void NZ(object? a, string msg = "object"){
         if( a == null ){
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[!] " + msg + " is NULL");

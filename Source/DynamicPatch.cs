@@ -45,6 +45,8 @@ public class DynamicPatch {
         // FIXME: how to return null?
         if( somefix.setResult == null ) return true;
 
+        il.Emit(OpCodes.Ldarg_0);
+
         if( patchDef.resultType == typeof(float) ){
             il.Emit(OpCodes.Ldc_R4, (float)somefix.setResultObj);
             il.Emit(OpCodes.Stind_R4);
@@ -84,7 +86,6 @@ public class DynamicPatch {
         }
 
         ILGenerator il = mb.GetILGenerator();
-        il.Emit(OpCodes.Ldarg_0);
         if(!emitResult(il, somefix)) return null;
         if( skipOriginal ){
             il.Emit( OpCodes.Ldc_I4_0 ); // returns false in Prefix()
@@ -94,8 +95,8 @@ public class DynamicPatch {
         return mb;
     }
 
-    public void CreateType(){
-        tb.CreateType();
+    public Type CreateType(){
+        return tb.CreateType();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
