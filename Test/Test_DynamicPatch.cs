@@ -37,12 +37,13 @@ class Test_DynamicPatch {
         Expect.Eq(args.Count(), 0);
     }
 
-    static void test_null(){
+    static void test_null(bool? retValue = null){
         var dp = new_dp(typeof(string));
         var prefix = new PatchDef.Prefix();
         prefix.setResult = null;
         prefix.setResultObj = null;
         prefix.isResultNull = true;
+        fixPrefix(prefix);
         var m0 = dp.MakeMethod("foo", prefix);
         Expect.NZ(m0);
         var type = dp.CreateType();
@@ -51,15 +52,16 @@ class Test_DynamicPatch {
         Expect.NZ(m);
 
         var args = new object[]{ "hi" };
-        Expect.Z(m.Invoke(null, args));
+        Expect.Eq(m.Invoke(null, args), retValue);
         Expect.Eq(args[0], null);
     }
 
-    static void test(Type type, object initial_value, object setResultObj ){
+    static void test(Type type, object initial_value, object setResultObj, bool? retValue = null){
         var dp = new_dp(type);
         var prefix = new PatchDef.Prefix();
         prefix.setResult = setResultObj.ToString();
         prefix.setResultObj = setResultObj;
+        fixPrefix(prefix);
         var m0 = dp.MakeMethod("foo", prefix);
         Expect.NZ(m0);
 
@@ -67,18 +69,29 @@ class Test_DynamicPatch {
         Expect.NZ(m);
 
         var args = new object[]{ initial_value };
-        Expect.Z(m.Invoke(null, args));
+        Expect.Eq(m.Invoke(null, args), retValue);
         Expect.Eq(args[0], setResultObj);
         Expect.Eq(args[0].GetType(), type);
     }
 
+    delegate void FixPrefixDelegate(PatchDef.Prefix prefix);
+    static FixPrefixDelegate fixPrefix = delegate{};
+
     public static void Run(){
         Console.WriteLine("[.] Running Test_DynamicPatch");
         test_nop();
+
         test_null();
         test(typeof(string), "hi", "bye");
         test(typeof(float), 1.1f, 222f);
         test(typeof(int), 12, 555);
         test(typeof(long), 0L, 5555555555L);
+
+        fixPrefix = delegate(PatchDef.Prefix prefix) { prefix.skipOriginal = true; };
+        test_null(false);
+        test(typeof(string), "hi", "bye", false);
+        test(typeof(float), 1.1f, 222f, false);
+        test(typeof(int), 12, 555, false);
+        test(typeof(long), 0L, 5555555555L, false);
     }
 }
