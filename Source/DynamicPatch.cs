@@ -21,11 +21,48 @@ public class DynamicPatch {
 
         tb = module.DefineType("YADA_Patch_" + patchDef.defName.Replace("-", "_"), TypeAttributes.Public | TypeAttributes.UnicodeClass);
 
-        // ctor of a [HarmonyPatch()] attribute
-        ConstructorInfo attrCtor = typeof(HarmonyPatch).GetConstructor( new Type[]{typeof(string), typeof(string), typeof(MethodType)} );
-        CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.className, patchDef.methodName, MethodType.Normal});
-        tb.SetCustomAttribute(cab);
-        // TODO: more custom attrs
+        {
+            // ctor of a [HarmonyPatch()] attribute
+            ConstructorInfo attrCtor = typeof(HarmonyPatch).GetConstructor( new Type[]{typeof(string), typeof(string), typeof(MethodType)} );
+            CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.className, patchDef.methodName, MethodType.Normal});
+            tb.SetCustomAttribute(cab);
+        }
+        if( !patchDef.HarmonyPriority.NullOrEmpty() ){
+            int prio;
+            if( patchDef.HarmonyPriority == "Priority.High" )
+                prio = Priority.High;
+            else if( patchDef.HarmonyPriority == "Priority.Low" )
+                prio = Priority.Low;
+            else if( patchDef.HarmonyPriority == "Priority.First" )
+                prio = Priority.First;
+            else if( patchDef.HarmonyPriority == "Priority.Last" )
+                prio = Priority.Last;
+            else if( patchDef.HarmonyPriority == "int.MinValue" )
+                prio = int.MinValue;
+            else if( patchDef.HarmonyPriority == "int.MaxValue" )
+                prio = int.MaxValue;
+            else if( !int.TryParse(patchDef.HarmonyPriority, out prio) ){
+                prio = Priority.Normal;
+            }
+            ConstructorInfo attrCtor = typeof(HarmonyPriority).GetConstructor( new Type[]{typeof(int)} );
+            CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {prio} );
+            tb.SetCustomAttribute(cab);
+        }
+        if( !patchDef.HarmonyBefore.NullOrEmpty() ){
+            ConstructorInfo attrCtor = typeof(HarmonyBefore).GetConstructor( new Type[]{typeof(string[])} );
+            CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.HarmonyBefore.ToArray()} );
+            tb.SetCustomAttribute(cab);
+        }
+        if( !patchDef.HarmonyAfter.NullOrEmpty() ){
+            ConstructorInfo attrCtor = typeof(HarmonyAfter).GetConstructor( new Type[]{typeof(string[])} );
+            CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.HarmonyAfter.ToArray()} );
+            tb.SetCustomAttribute(cab);
+        }
+        if( patchDef.HarmonyDebug ){
+            ConstructorInfo attrCtor = typeof(HarmonyDebug).GetConstructor( new Type[]{} );
+            CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {} );
+            tb.SetCustomAttribute(cab);
+        }
     }
 
     public bool MakeMethods(){

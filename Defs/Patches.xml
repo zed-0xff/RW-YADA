@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <zed_0xff.YADA.PatchDef>
+    <!--HarmonyDebug>true</HarmonyDebug-->
+    <HarmonyPriority>555</HarmonyPriority>
+    <HarmonyAfter>
+      <li>foo</li>
+      <li>bar</li>
+      <li>baz</li>
+    </HarmonyAfter>
+    <HarmonyBefore>
+      <li>foo</li>
+      <li>bar</li>
+      <li>baz</li>
+    </HarmonyBefore>
     <className>Need</className>
     <methodName>get_CurLevel</methodName>
+    <prefix>
+      <setResult>0.4</setResult>
+      <skipOriginal>true</skipOriginal>
+    </prefix>
     <postfix>
       <setResult>0.4</setResult>
     </postfix>

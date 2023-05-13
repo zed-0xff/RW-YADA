@@ -33,6 +33,11 @@ public class PatchDef : Def {
         }
     }
 
+    public string HarmonyPriority;
+    public List<string> HarmonyBefore;
+    public List<string> HarmonyAfter;
+    public bool HarmonyDebug;
+
     public class Prefix : Anyfix {
         public bool skipOriginal;
     }
