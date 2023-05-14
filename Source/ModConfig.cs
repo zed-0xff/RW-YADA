@@ -1,3 +1,4 @@
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using RimWorld;
@@ -43,7 +44,9 @@ public class ModConfig : Mod {
     public ModConfig(ModContentPack content) : base(content) {
         RootDir = content.RootDir;
         Settings = GetSettings<YADASettings>();
-//        ParseHelper.Parsers<PatchDef.Argument>.Register((string s) => PatchDef.Argument.FromString(s));
+        // apply YADA core patches here, before Init.Init() to hook Root.OnGUI early
+        Harmony harmony = new Harmony("zed_0xff.YADA");
+        harmony.PatchAll();
     }
 
     public override void DoSettingsWindowContents(Rect inRect) {
