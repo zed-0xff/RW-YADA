@@ -54,16 +54,18 @@ Add default `.rimignore` file to your mod with a single click.
 ## 3. All dev flags are now saved with the game
 
 Like "god mode", "unlimited power", all draw flags, etc etc.
-
 Only if dev mode is on.
+
+![](screens/yada3.jpg)
 
 ## 4. Add translucent debug log overlay
 
 toggled by "§" key, changeable
 
 ## 5. Hediff severity +/- buttons
-
 standard ctrl/shift modifier keys are honored
+
+![](screens/yada4.jpg)
 
 
 ### Links:
