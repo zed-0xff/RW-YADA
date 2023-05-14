@@ -10,10 +10,7 @@ static class Patch_DebugTabMenu_Settings {
     [HarmonyPatch(typeof(DebugTabMenu_Settings), "InitActions")]
     static class Patch_InitActions {
         static void Postfix(DebugTabMenu_Settings __instance) {
-            foreach (var fi in typeof(Yada_DebugSettings).GetFields()) {
-                __instance.AddNode(fi, "YADA");
-            }
-            foreach (var fi in DynamicPatch.dynamicSettingsContainer.GetFields()) {
+            foreach (var fi in DynamicPatch.dynamicSettings) {
                 FieldCategory c = fi.GetCustomAttribute<FieldCategory>();
                 string category = "YADA";
                 if( c?.value != null ){

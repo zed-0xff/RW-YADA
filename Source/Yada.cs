@@ -10,23 +10,25 @@ class Yada : WorldComponent {
     public Yada(World w) : base(w) {
     }
 
-    public void Save(Type t){
-        FieldInfo[] fields = t.GetFields();
+    public void Save(Type t, FieldInfo[] fields = null){
+        if( fields == null )
+            fields = t.GetFields();
         foreach (FieldInfo fi in fields){
             if( fi.FieldType == typeof(bool ) ){
-                bool b = (bool)fi.GetValue(t);
+                bool b = (bool)fi.GetValue(null);
                 Scribe_Values.Look(ref b, t.Name + "." + fi.Name, forceSave: true);
             }
         }
     }
 
-    public void Load(Type t){
-        FieldInfo[] fields = t.GetFields();
+    public void Load(Type t, FieldInfo[] fields = null){
+        if( fields == null )
+            fields = t.GetFields();
         foreach (FieldInfo fi in fields){
             if( fi.FieldType == typeof(bool ) ){
-                bool b = (bool)fi.GetValue(t);
+                bool b = (bool)fi.GetValue(null);
                 Scribe_Values.Look(ref b, t.Name + "." + fi.Name, b);
-                if( b != (bool)fi.GetValue(t) ){
+                if( b != (bool)fi.GetValue(null) ){
                     fi.SetValue(null, b);
                     MethodInfo method = fi.DeclaringType.GetMethod(fi.Name + "Toggled", BindingFlags.Static | BindingFlags.Public);
                     if (method != null){
@@ -49,8 +51,7 @@ class Yada : WorldComponent {
             case LoadSaveMode.Saving:
                 Save(typeof(DebugSettings));
                 Save(typeof(DebugViewSettings));
-                Save(typeof(Yada_DebugSettings));
-                Save(DynamicPatch.dynamicSettingsContainer);
+                Save(typeof(DynamicPatch), DynamicPatch.dynamicSettings.ToArray());
                 if( ModConfig.Settings.saveDebugLogAutoOpen ){
                     bool b = (bool)fiCanAutoOpen.GetValue(null);
                     Scribe_Values.Look(ref b, "EditWindow_Log.canAutoOpen", forceSave: true);
@@ -59,8 +60,7 @@ class Yada : WorldComponent {
             case LoadSaveMode.LoadingVars:
                 Load(typeof(DebugSettings));
                 Load(typeof(DebugViewSettings));
-                Load(typeof(Yada_DebugSettings));
-                Load(DynamicPatch.dynamicSettingsContainer);
+                Load(typeof(DynamicPatch), DynamicPatch.dynamicSettings.ToArray());
                 if( ModConfig.Settings.saveDebugLogAutoOpen ){
                     bool b = true;
                     Scribe_Values.Look(ref b, "EditWindow_Log.canAutoOpen", true);

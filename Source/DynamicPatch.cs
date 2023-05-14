@@ -15,8 +15,8 @@ public class DynamicPatch {
     private TypeBuilder tb;
     private ModuleBuilder module;
 
-    private static TypeBuilder dynamicSettingsBuilder;
-    public static Type dynamicSettingsContainer;
+    public static List<FieldInfo> dynamicSettings = new List<FieldInfo>();
+    private static int uniqNameCounter = 0;
 
     public DynamicPatch(PatchDef patchDef, ModuleBuilder module){
         this.patchDef = patchDef;
@@ -74,9 +74,14 @@ public class DynamicPatch {
         }
     }
 
+    private FieldInfo dsCheckbox = null;
+
     public bool MakeMethods(){
         if( patchDef.debugSettingsCheckbox != null ){
-            FieldBuilder fb = dynamicSettingsBuilder.DefineField(patchDef.defName, typeof(bool), FieldAttributes.Public | FieldAttributes.Static);
+            string ds_className = "YADA_DynamicSettings_" + uniqNameCounter++;
+            string ds_fieldName = patchDef.defName;
+            TypeBuilder dynamicSettingsBuilder = module.DefineType(ds_className, TypeAttributes.Public | TypeAttributes.UnicodeClass);
+            FieldBuilder fb = dynamicSettingsBuilder.DefineField(ds_fieldName, typeof(bool), FieldAttributes.Public | FieldAttributes.Static);
             if( !patchDef.label.NullOrEmpty() ){
                 ConstructorInfo attrCtor = typeof(FieldLabel).GetConstructor( new Type[]{typeof(string)} );
                 CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.label} );
@@ -87,7 +92,10 @@ public class DynamicPatch {
                 CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.debugSettingsCheckbox.category } );
                 fb.SetCustomAttribute(cab);
             }
-            fb.SetConstant(patchDef.debugSettingsCheckbox.defaultValue);
+            Type dynamicSettingsContainer = dynamicSettingsBuilder.CreateType();
+            dsCheckbox = dynamicSettingsContainer.GetField(ds_fieldName);
+            dsCheckbox.SetValue( null, patchDef.debugSettingsCheckbox.defaultValue );
+            dynamicSettings.Add(dsCheckbox);
         }
         if( patchDef.prefix != null ){
             if( MakeMethod("Prefix", patchDef.prefix) == null )
@@ -152,19 +160,39 @@ public class DynamicPatch {
         }
 
         ILGenerator il = mb.GetILGenerator();
-        Label lret = il.DefineLabel();
-
+        emitCommonHead(il);
         if( !parser.ParseOpcodes(il) ){
             Log.Error("[!] YADA: " + parser.error);
             return null;
         }
+        emitCommonTail(il, skipOriginal);
+
+        return mb;
+    }
+
+    Label lret;
+
+    void emitCommonHead(ILGenerator il){
+        lret = il.DefineLabel();
+
+        if( dsCheckbox != null ){
+            il.Emit( OpCodes.Ldsfld, dsCheckbox );
+            il.Emit( OpCodes.Brfalse, lret );
+        }
+    }
+
+    void emitCommonTail(ILGenerator il, bool skipOriginal){
         if( skipOriginal ){
             il.Emit( OpCodes.Ldc_I4_0 ); // returns false in Prefix()
         }
-        il.MarkLabel(lret);
         il.Emit(OpCodes.Ret);
 
-        return mb;
+        // we'll get here if checkbox is OFF
+        il.MarkLabel(lret);
+        if( skipOriginal ){
+            il.Emit( OpCodes.Ldc_I4_1 ); // returns true in Prefix()
+        }
+        il.Emit(OpCodes.Ret);
     }
 
     public MethodBuilder MakeMethod(string methodName, PatchDef.Anyfix anyfix){
@@ -183,11 +211,9 @@ public class DynamicPatch {
         }
 
         ILGenerator il = mb.GetILGenerator();
+        emitCommonHead(il);
         if(!emitResult(il, anyfix)) return null;
-        if( skipOriginal ){
-            il.Emit( OpCodes.Ldc_I4_0 ); // returns false in Prefix()
-        }
-        il.Emit(OpCodes.Ret);
+        emitCommonTail(il, skipOriginal);
 
         return mb;
     }
@@ -222,8 +248,6 @@ public class DynamicPatch {
         var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("yada_dyn_ass"), AssemblyBuilderAccess.Run);
         ModuleBuilder module = assembly.DefineDynamicModule("yada_dyn_mod");
 
-        dynamicSettingsBuilder = module.DefineType("YADA_DynamicSettings", TypeAttributes.Public | TypeAttributes.UnicodeClass);
-
         foreach( PatchDef patchDef in DefDatabase<PatchDef>.AllDefsListForReading ){
             if( !patchDef.enabled ) continue;
             if( patchDef.ConfigErrors().Any() ) continue;
@@ -239,13 +263,6 @@ public class DynamicPatch {
                     debugLogAllMethodsFrom(t);
                 }
             }
-        }
-
-        dynamicSettingsContainer = dynamicSettingsBuilder.CreateType();
-
-        // set defaults
-        foreach( FieldInfo fi in dynamicSettingsContainer.GetFields() ){
-            fi.SetValue( null, fi.GetRawConstantValue() ); // will raise error if SetConstantValue wasnt called
         }
 
         harmony.PatchAll(assembly);
