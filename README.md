@@ -68,7 +68,9 @@ Only if dev mode is on.
 
 ## 4. Add translucent debug log overlay
 
-toggled by "§" key, changeable
+toggled by "§" key, totally configurable.
+
+![](screens/yada6.jpg)
 
 ## 5. Hediff severity +/- buttons
 standard ctrl/shift modifier keys are honored
