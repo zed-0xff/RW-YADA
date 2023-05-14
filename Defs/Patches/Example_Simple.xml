@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <YADA.PatchDef>
+    <!-- simple devmode patch, toggleable in debug settings, default off -->
+    <defName>YADA_disableAutomaticUndraft</defName>
+    <label>Disable automatic undraft</label>
+
+    <className>AutoUndrafter</className>
+    <methodName>ShouldAutoUndraft</methodName>
+    <postfix>
+      <setResult>false</setResult>
+    </postfix>
+
+    <debugSettingsCheckbox/>
+  </YADA.PatchDef>
+
+</Defs>

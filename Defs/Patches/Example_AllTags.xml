@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- added all possible tags here, just for example -->
+  <YADA.PatchDef>
+    <defName>YADA_freezeNeedsAtHalf</defName>
+    <label>Freeze needs at 0.5</label>
+
+    <enabled>false</enabled>
+
+    <HarmonyPriority>555</HarmonyPriority>
+    <HarmonyAfter>
+      <li>foo</li>
+      <li>bar</li>
+      <li>baz</li>
+    </HarmonyAfter>
+    <HarmonyBefore>
+      <li>foo</li>
+      <li>bar</li>
+      <li>baz</li>
+    </HarmonyBefore>
+
+    <className>Need</className>
+    <methodName>get_CurLevel</methodName>
+    <prefix>
+      <setResult>0.5</setResult>
+      <skipOriginal>true</skipOriginal>
+    </prefix>
+    <postfix>
+      <setResult>0.5</setResult>
+    </postfix>
+
+    <debugSettingsCheckbox>
+      <defaultValue>false</defaultValue>
+      <category>YADA</category>
+    </debugSettingsCheckbox>
+  </YADA.PatchDef>
+
+</Defs>
