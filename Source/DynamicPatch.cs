@@ -244,7 +244,7 @@ public class DynamicPatch {
     }
 
     public static void PatchAll(){
-        Harmony harmony = new Harmony("zed_0xff.YADA");
+        Harmony harmony = null;
         var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("yada_dyn_ass"), AssemblyBuilderAccess.Run);
         ModuleBuilder module = assembly.DefineDynamicModule("yada_dyn_mod");
 
@@ -262,9 +262,12 @@ public class DynamicPatch {
                 if( patchDef.HarmonyDebug && Prefs.DevMode ){
                     debugLogAllMethodsFrom(t);
                 }
+                string newHarmonyId = patchDef.modContentPack.PackageIdPlayerFacing;
+                if( harmony == null || harmony.Id != newHarmonyId ){
+                    harmony = new Harmony(newHarmonyId);
+                }
+                harmony.CreateClassProcessor(t).Patch();
             }
         }
-
-        harmony.PatchAll(assembly);
     }
 }
