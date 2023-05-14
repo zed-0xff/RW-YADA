@@ -3,6 +3,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Collections.Generic;
+using System.Text;
 using Verse;
 
 namespace zed_0xff.YADA;
@@ -73,6 +75,20 @@ public class DynamicPatch {
     }
 
     public bool MakeMethods(){
+        if( patchDef.debugSettingsCheckbox != null ){
+            FieldBuilder fb = dynamicSettingsBuilder.DefineField(patchDef.defName, typeof(bool), FieldAttributes.Public | FieldAttributes.Static);
+            if( !patchDef.label.NullOrEmpty() ){
+                ConstructorInfo attrCtor = typeof(FieldLabel).GetConstructor( new Type[]{typeof(string)} );
+                CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.label} );
+                fb.SetCustomAttribute(cab);
+            }
+            {
+                ConstructorInfo attrCtor = typeof(FieldCategory).GetConstructor( new Type[]{typeof(string)} );
+                CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.debugSettingsCheckbox.category } );
+                fb.SetCustomAttribute(cab);
+            }
+            fb.SetConstant(patchDef.debugSettingsCheckbox.defaultValue);
+        }
         if( patchDef.prefix != null ){
             if( MakeMethod("Prefix", patchDef.prefix) == null )
                 return false;
@@ -80,20 +96,6 @@ public class DynamicPatch {
         if( patchDef.postfix != null ){
             if( MakeMethod("Postfix", patchDef.postfix) == null )
                 return false;
-        }
-        if( patchDef.debugSettingsCheckbox != null ){
-            var f = dynamicSettingsBuilder.DefineField(patchDef.defName, typeof(bool), FieldAttributes.Public | FieldAttributes.Static);
-            if( !patchDef.label.NullOrEmpty() ){
-                ConstructorInfo attrCtor = typeof(FieldLabel).GetConstructor( new Type[]{typeof(string)} );
-                CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.label} );
-                f.SetCustomAttribute(cab);
-            }
-            {
-                ConstructorInfo attrCtor = typeof(FieldCategory).GetConstructor( new Type[]{typeof(string)} );
-                CustomAttributeBuilder cab = new CustomAttributeBuilder( attrCtor, new object[] {patchDef.debugSettingsCheckbox.category } );
-                f.SetCustomAttribute(cab);
-            }
-            f.SetConstant(patchDef.debugSettingsCheckbox.defaultValue);
         }
         return true;
     }
@@ -131,14 +133,44 @@ public class DynamicPatch {
         return true;
     }
 
+    public MethodBuilder MakeMethodFromOpcodes(string methodName, PatchDef.Anyfix anyfix){
+        var parser = new Parser(anyfix, patchDef);
+        if( !parser.ParseArguments() ){
+            Log.Error("[!] YADA: " + parser.error);
+            return null;
+        }
+
+        bool skipOriginal = anyfix is PatchDef.Prefix prefix && prefix.skipOriginal;
+        Type retType = skipOriginal ? typeof(bool) : null;
+        MethodBuilder mb = tb.DefineMethod(methodName, MethodAttributes.Public | MethodAttributes.Static, retType, parser.argTypes.ToArray());
+
+        for( int i=0; i<parser.argNames.Count(); i++ ){
+            mb.DefineParameter(i+1, ParameterAttributes.None, parser.argNames[i]);
+            if( patchDef.HarmonyDebug && Prefs.DevMode ){
+                Log.Message("[d] YADA: arg #" + i + ": " + parser.argTypes[i] + " " + parser.argNames[i]);
+            }
+        }
+
+        ILGenerator il = mb.GetILGenerator();
+        Label lret = il.DefineLabel();
+
+        if( !parser.ParseOpcodes(il) ){
+            Log.Error("[!] YADA: " + parser.error);
+            return null;
+        }
+        if( skipOriginal ){
+            il.Emit( OpCodes.Ldc_I4_0 ); // returns false in Prefix()
+        }
+        il.MarkLabel(lret);
+        il.Emit(OpCodes.Ret);
+
+        return mb;
+    }
+
     public MethodBuilder MakeMethod(string methodName, PatchDef.Anyfix anyfix){
-//        var mstub = AccessTools.Method(this.GetType(), "stub", new Type[]{ patchDef.resultType.MakeByRefType() } );
-//        if( mstub == null ){
-//            Log.Error("[!] YADA: cannot get stub method for " + patchDef.resultType);
-//            return null;
-//        }
-//
-//        var instructions = PatchProcessor.GetOriginalInstructions(mstub);
+        if( anyfix.opcodes != null )
+            return MakeMethodFromOpcodes(methodName, anyfix);
+
         bool skipOriginal = anyfix is PatchDef.Prefix prefix && prefix.skipOriginal;
         bool hasArgument = anyfix.setResultObj != null || anyfix.isResultNull;
 
@@ -166,6 +198,25 @@ public class DynamicPatch {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static void debugLogAllMethodsFrom(Type t){
+        StringBuilder sb = new StringBuilder();
+        foreach( var c in t.CustomAttributes ){
+            sb.AppendLineIfNotEmpty().Append("[d] " + c);
+        }
+        sb.AppendLineIfNotEmpty().Append("[d] " + t);
+        sb.AppendLineIfNotEmpty();
+
+        foreach( MethodInfo mi in t.GetMethods(AccessTools.allDeclared)){
+            var instructions = PatchProcessor.GetOriginalInstructions(mi);
+            sb.AppendLineIfNotEmpty().Append("[d] " + mi);
+            sb.AppendLineIfNotEmpty().Append(mi);
+            foreach( var op in instructions ){
+                sb.AppendLineIfNotEmpty().Append("    " + op);
+            }
+        }
+        Log.Message(sb.ToString());
+    }
+
     public static void PatchAll(){
         Harmony harmony = new Harmony("zed_0xff.YADA");
         var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("yada_dyn_ass"), AssemblyBuilderAccess.Run);
@@ -174,11 +225,19 @@ public class DynamicPatch {
         dynamicSettingsBuilder = module.DefineType("YADA_DynamicSettings", TypeAttributes.Public | TypeAttributes.UnicodeClass);
 
         foreach( PatchDef patchDef in DefDatabase<PatchDef>.AllDefsListForReading ){
+            if( !patchDef.enabled ) continue;
             if( patchDef.ConfigErrors().Any() ) continue;
+
+            if( Prefs.DevMode ){
+                Log.Message("[d] YADA: applying dynamic patch " + patchDef.defName + " from " + patchDef.modContentPack);
+            }
 
             var dp = new DynamicPatch(patchDef, module);
             if( dp.MakeMethods() ){
-                dp.CreateType();
+                var t = dp.CreateType();
+                if( patchDef.HarmonyDebug && Prefs.DevMode ){
+                    debugLogAllMethodsFrom(t);
+                }
             }
         }
 

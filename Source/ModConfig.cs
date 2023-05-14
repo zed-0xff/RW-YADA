@@ -43,6 +43,7 @@ public class ModConfig : Mod {
     public ModConfig(ModContentPack content) : base(content) {
         RootDir = content.RootDir;
         Settings = GetSettings<YADASettings>();
+//        ParseHelper.Parsers<PatchDef.Argument>.Register((string s) => PatchDef.Argument.FromString(s));
     }
 
     public override void DoSettingsWindowContents(Rect inRect) {

@@ -10,6 +10,8 @@ namespace zed_0xff.YADA;
 #pragma warning disable CS0649, CS0169, CS0414
 
 public class PatchDef : Def {
+    
+    public bool enabled = true; // skips this patch completely
 
     public string HarmonyPriority;
     public List<string> HarmonyBefore;
@@ -34,6 +36,8 @@ public class PatchDef : Def {
 
     public abstract class Anyfix {
         public string setResult = UndefinedResult;
+        public List<string> opcodes;
+        public List<string> arguments;
 
         [Unsaved(false)]
         public object setResultObj;
@@ -106,10 +110,19 @@ public class PatchDef : Def {
         }
 
         string check_anyfix(Anyfix a){
+            if( a.opcodes != null && a.setResult != null ){
+                return "cannot have both opcodes and setResult simultaneously";
+            }
+            if( a.arguments != null && a.opcodes == null ){
+                return "<arguments> are only used with <opcodes>";
+            }
             if( a.setResult == null ){
                 a.setResultObj = null;
                 a.setResult = null;
             } else {
+                if( a.opcodes != null || a.arguments != null ){
+                    return "either use setResult or arguments+opcodes";
+                }
                 if( !ParseHelper.CanParse(resultType, a.setResult) ){
                     return "can't parse \"" + a.setResult + "\" as " + resultType;
                 }
