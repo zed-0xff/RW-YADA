@@ -77,10 +77,11 @@ standard ctrl/shift modifier keys are honored
 
 ![](screens/yada4.jpg)
 
-
 ### Links:
 
 * [Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2971543841)
 * [GitHub](https://github.com/zed-0xff/RW-YADA)
 * [Patreon](https://patreon.com/zed_0xff)
 * [Ko-fi](https://ko-fi.com/zed_0xff)
+
+### License: MIT

@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    md_to_bbcode (2.0.0)
+      redcarpet (~> 3.5)
+    redcarpet (3.6.0)
+
+PLATFORMS
+  arm64-darwin-21
+
+DEPENDENCIES
+  md_to_bbcode
+
+BUNDLED WITH
+   2.3.22

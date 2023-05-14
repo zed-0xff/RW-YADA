@@ -59,3 +59,41 @@ end
 task :list do
   printf "[=] %5d KB\n", list_dir(".")/1024
 end
+
+namespace :readme do
+  desc "render README as bbcode"
+  task :bb do
+    require 'md_to_bbcode'
+  
+    class ForumRenderer < MdToBbcode::BbcodeRenderer
+      def header(text, header_level)
+        case header_level
+        when 1
+          "\n[center][size=20pt]#{text}[/size][/center]\n"
+        when 2
+          "\n[color=orange][size=18pt]#{text}[/size][/color]\n"
+        else
+          "\n\n[color=orange][b]#{text}[/b][/color]\n"
+        end
+      end
+      def git_url
+        @git_url ||= `git remote -v`.scan(/git@github\.com:(.+)\.git/).flatten.first
+      end
+      def image(link, title, alt_text)
+        link = "https://github.com/#{git_url}/raw/master/" + link unless link['//']
+        "[img]#{link}[/img]"
+      end
+      def link(link, title, content)
+        link = "https://github.com/#{git_url}/raw/master/" + link unless link['//']
+        "[url=#{link}]#{content}[/url]"
+      end
+      def paragraph(text)
+        text + "\n\n"
+      end
+    end
+
+    puts Redcarpet::Markdown
+      .new(ForumRenderer, fenced_code_blocks: true, lax_spacing: false)
+      .render(File.read("README.md"))
+  end
+end
