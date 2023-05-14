@@ -43,6 +43,10 @@ See the mod's `Patches` dir for more examples.
 
 I bet you've dreamt of writing the CIL opcodes in XML )) Can be done now!
 
+And as a bonus you'd get a free checkbox if `<debugSettingsCheckbox/>` is there. Category and default value is configurable.
+
+![](screens/yada5.jpg)
+
 ## 1. .rimignore
 
 Now you can filter files you upload to Steam, similar to \[b\].gitignore\[/b\].
