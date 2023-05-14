@@ -4,42 +4,43 @@
 
 So simple!
 
-    <YADA.PatchDef>
-        <defName>YADA_freezeNeedsAtHalf</defName>
-        <className>Need</className>
-        <methodName>get_CurLevel</methodName>
-        <postfix>
-          <setResult>0.5</setResult>
-        </postfix>
-    </YADA.PatchDef>
-
+``` xml
+<YADA.PatchDef>
+    <defName>YADA_freezeNeedsAtHalf</defName>
+    <className>Need</className>
+    <methodName>get_CurLevel</methodName>
+    <postfix>
+      <setResult>0.5</setResult>
+    </postfix>
+</YADA.PatchDef>
+```
 Or a bit more complex:
+``` xml
+<YADA.PatchDef>
+    <defName>YADA_freezeNeedsAtMax</defName>
+    <label>Freeze needs at max</label>
 
-    <YADA.PatchDef>
-        <defName>YADA_freezeNeedsAtMax</defName>
-        <label>Freeze needs at max</label>
-    
-        <className>Need</className>
-        <methodName>get_CurLevel</methodName>
-        <postfix>
-          <arguments>
-            <li>ref __result</li>
-            <li>__instance</li>
-          </arguments>
-          <opcodes>
-            <!-- checkbox code is added automagically -->
-            <li>Ldarg_0</li>
-            <li>Ldarg_1</li>
-            <li>Callvirt RimWorld.Need::get_MaxLevel</li>
-            <li>Stind_R4</li>
-            <!-- ret is added automagically -->
-          </opcodes>
-        </postfix>
-    
-        <debugSettingsCheckbox/>
-    </YADA.PatchDef>
+    <className>Need</className>
+    <methodName>get_CurLevel</methodName>
+    <postfix>
+      <arguments>
+        <li>ref __result</li>
+        <li>__instance</li>
+      </arguments>
+      <opcodes>
+        <!-- checkbox code is added automagically -->
+        <li>Ldarg_0</li>
+        <li>Ldarg_1</li>
+        <li>Callvirt RimWorld.Need::get_MaxLevel</li>
+        <li>Stind_R4</li>
+        <!-- ret is added automagically -->
+      </opcodes>
+    </postfix>
 
-See the mod's `Patches` dir for more examples.
+    <debugSettingsCheckbox/>
+</YADA.PatchDef>
+```
+See the [Patches](Defs/Patches) dir for more examples.
 
 I bet you've dreamt of writing the CIL opcodes in XML )) Can be done now!
 
