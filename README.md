@@ -47,9 +47,12 @@ I bet you've dreamt of writing the CIL opcodes in XML )) Can be done now!
 
 Now you can filter files you upload to Steam, similar to \[b\].gitignore\[/b\].
 
-Add default `.rimignore` file to your mod with a single click.
+Add default [`.rimignore`](.rimignore) file to your mod with a single click.
 
 ## 2. mod size is now shown before upload
+
+![without .rimignore](screens/yada1.jpg)
+![with .rimignore](screens/yada2.jpg)
 
 ## 3. All dev flags are now saved with the game
 
