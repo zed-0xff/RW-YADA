@@ -9,6 +9,8 @@
   </supportedVersions>
   <description>YADA: Yet Another Dev Assistant
 
+0. XML Harmony patches!
+
 1. .rimignore
 Now you can filter files you upload to Steam, similar to .gitignore.
 Add default .rimignore file to your mod with a single click.
