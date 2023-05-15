@@ -67,25 +67,21 @@ public class Parser {
 
     void emitOpcodeWithArg(ILGenerator il, OpCode opcode, string s){
         if( opcode == OpCodes.Call || opcode == OpCodes.Callvirt ){
-            var a = s.Split(new char[] { '.', ':' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            if( a.Count() < 2 ){
-                error = opcode + ": don't know how to parse " + a.Count() + " arg(s)";
-                return;
-            }
-            string methodName = a[a.Count() - 1];
-            a.RemoveAt(a.Count() - 1);
-            string className = String.Join(".", a);
-            Type t = AccessTools.TypeByName(className);
-            if( t == null ){
-                error = opcode + ": cannot get type for " + t;
-                return;
-            }
-            MethodInfo mi = AccessTools.Method(t, methodName);
+            MethodInfo mi = Utils.fqmnToMethodInfo(s, out error);
             if( mi == null ){
-                error = opcode + ": cannot get method " + methodName;
+                error = opcode + ": " + error;
                 return;
             }
             il.Emit(opcode, mi);
+            return;
+        }
+        if( opcode == OpCodes.Isinst ){
+            Type t = AccessTools.TypeByName(s);
+            if( t == null ){
+                error = opcode + ": cannot get type for " + s;
+                return;
+            }
+            il.Emit(opcode, t);
             return;
         }
         error = opcode + ": don't know how to parse arg";

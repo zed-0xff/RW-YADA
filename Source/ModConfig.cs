@@ -1,6 +1,8 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 using RimWorld;
 using Verse;
 using UnityEngine;
@@ -62,7 +64,8 @@ public class ModConfig : Mod {
 
         var tabs = new List<TabRecord> {
             new TabRecord("General".Translate(), () => { PageIndex = 0; WriteSettings(); }, PageIndex == 0),
-            new TabRecord("Log overlay", () => { PageIndex = 1; WriteSettings(); }, PageIndex == 1),
+            new TabRecord("Log overlay", ()         => { PageIndex = 1; WriteSettings(); }, PageIndex == 1),
+            new TabRecord("Tools", ()               => { PageIndex = 2; WriteSettings(); }, PageIndex == 2),
         };
 
         TabDrawer.DrawTabs(tabRect, tabs);
@@ -75,10 +78,38 @@ public class ModConfig : Mod {
             case 1:
                 draw_log(mainRect.ContractedBy(15f));
                 break;
+            case 2:
+                draw_tools(mainRect.ContractedBy(15f));
+                break;
             default:
                 break;
         }
         base.DoSettingsWindowContents(inRect);
+    }
+
+    string fqmn = "StorytellerUtility.DefaultThreatPointsNow";
+    string msg;
+
+    void draw_tools(Rect inRect){
+        Listing_Standard l = new Listing_Standard();
+        l.Begin(inRect);
+
+        string error = null;
+        fqmn = l.TextEntryLabeled("ClassName.MethodName: ", fqmn);
+        if( l.ButtonTextLabeled("", "disasm to debug log") ){
+            MethodInfo mi = Utils.fqmnToMethodInfo(fqmn, out error);
+            if( mi != null && error == null ){
+                StringBuilder sb = new StringBuilder();
+                msg = "wrote " + Utils.Disasm(mi, sb) + " instructions to debug log";
+                Log.Message(sb.ToString());
+            }
+        }
+        if( error != null ){
+            msg = error.Colorize(Color.red);
+        }
+        l.LabelDouble("", msg);
+
+        l.End();
     }
 
     void draw_general(Rect inRect){

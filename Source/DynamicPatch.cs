@@ -233,12 +233,7 @@ public class DynamicPatch {
         sb.AppendLineIfNotEmpty();
 
         foreach( MethodInfo mi in t.GetMethods(AccessTools.allDeclared)){
-            var instructions = PatchProcessor.GetOriginalInstructions(mi);
-            sb.AppendLineIfNotEmpty().Append("[d] " + mi);
-            sb.AppendLineIfNotEmpty().Append(mi);
-            foreach( var op in instructions ){
-                sb.AppendLineIfNotEmpty().Append("    " + op);
-            }
+            Utils.Disasm(mi, sb);
         }
         Log.Message(sb.ToString());
     }
