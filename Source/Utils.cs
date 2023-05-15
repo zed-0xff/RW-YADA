@@ -32,11 +32,13 @@ public static class Utils {
         return mi;
     }
 
-    public static int Disasm(MethodInfo mi, StringBuilder sb){
+    public static int Disasm(MethodInfo mi, StringBuilder sb, bool showPrefix = true, int indent = 4){
         var instructions = PatchProcessor.GetOriginalInstructions(mi);
-        sb.AppendLineIfNotEmpty().Append("[d] " + mi);
+        if( showPrefix ){
+            sb.AppendLineIfNotEmpty().Append("[d] " + mi);
+        }
         foreach( var op in instructions ){
-            sb.AppendLineIfNotEmpty().Append("    " + op);
+            sb.AppendLineIfNotEmpty().Append(new string(' ', indent) + op);
         }
         return instructions.Count();
     }

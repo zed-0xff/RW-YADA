@@ -21,6 +21,7 @@ public class YADASettings : ModSettings {
     public float logLineSpacing = 0.88f;
 
     public bool saveDebugLogAutoOpen = true;
+    public bool removeModUploadDelay = false;
 
     public override void ExposeData() {
         Scribe_Values.Look(ref drawLogOverlay, "drawLogOverlay", false);
@@ -33,6 +34,7 @@ public class YADASettings : ModSettings {
         Scribe_Values.Look(ref logLineSpacing, "log.lineSpacing", 0.88f);
 
         Scribe_Values.Look(ref saveDebugLogAutoOpen, "saveDebugLogAutoOpen", true);
+        Scribe_Values.Look(ref removeModUploadDelay, "removeModUploadDelay", false);
         base.ExposeData();
     }
 }
@@ -87,27 +89,80 @@ public class ModConfig : Mod {
         base.DoSettingsWindowContents(inRect);
     }
 
-    string fqmn = "StorytellerUtility.DefaultThreatPointsNow";
-    string msg;
+    static class DisasmTool {
+        static string fqmn = "StorytellerUtility.DefaultThreatPointsNow";
+        static string msg;
+
+        public static void Draw(Listing_Standard l){
+            string error = null;
+            fqmn = l.TextEntryLabeled("ClassName.MethodName: ", fqmn);
+            if( l.ButtonTextLabeled("", "disasm to debug log") ){
+                MethodInfo mi = Utils.fqmnToMethodInfo(fqmn, out error);
+                if( mi != null && error == null ){
+                    StringBuilder sb = new StringBuilder();
+                    msg = "wrote " + Utils.Disasm(mi, sb) + " instructions to debug log";
+                    Log.Message(sb.ToString());
+                }
+            }
+            if( error != null ){
+                msg = error.Colorize(Color.red);
+            }
+            l.LabelDouble("", msg);
+        }
+    }
+
+    static class NestedTypesListerTool {
+        static string className = "Page_ModsConfig";
+        static string msg;
+        static bool logMethods;
+        static bool disasmMethods;
+
+        public static void Draw(Listing_Standard l){
+            string error = null;
+            className = l.TextEntryLabeled("ClassName: ", className);
+            l.CheckboxLabeled("show methods also", ref logMethods);
+            l.CheckboxLabeled("disasm them all", ref disasmMethods);
+
+            if( l.ButtonTextLabeled("", "list nested types to debug log") ){
+                Type t = AccessTools.TypeByName(className);
+                if( t == null ){
+                    error = "cannot find class";
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("[d] nested types of " + t + ":");
+                    Type[] nestedTypes = t.GetNestedTypes(AccessTools.all);
+                    if( nestedTypes.Length == 0 ){
+                        error = "no nested types";
+                    } else {
+                        foreach( Type nt in nestedTypes ){
+                            sb.AppendLineIfNotEmpty().Append("    " + nt);
+                            if( logMethods ){
+                                foreach( var m in nt.GetMethods(AccessTools.all)){
+                                    sb.AppendLineIfNotEmpty().Append("        " + m);
+                                    if( disasmMethods ){
+                                        Utils.Disasm(m, sb, showPrefix: false, indent: 12);
+                                    }
+                                }
+                            }
+                        }
+                        msg = "wrote " + nestedTypes.Length + " types to debug log";
+                        Log.Message(sb.ToString());
+                    }
+                }
+            }
+            if( error != null ){
+                msg = error.Colorize(Color.red);
+            }
+            l.LabelDouble("", msg);
+        }
+    }
 
     void draw_tools(Rect inRect){
         Listing_Standard l = new Listing_Standard();
         l.Begin(inRect);
 
-        string error = null;
-        fqmn = l.TextEntryLabeled("ClassName.MethodName: ", fqmn);
-        if( l.ButtonTextLabeled("", "disasm to debug log") ){
-            MethodInfo mi = Utils.fqmnToMethodInfo(fqmn, out error);
-            if( mi != null && error == null ){
-                StringBuilder sb = new StringBuilder();
-                msg = "wrote " + Utils.Disasm(mi, sb) + " instructions to debug log";
-                Log.Message(sb.ToString());
-            }
-        }
-        if( error != null ){
-            msg = error.Colorize(Color.red);
-        }
-        l.LabelDouble("", msg);
+        DisasmTool.Draw(l);
+        NestedTypesListerTool.Draw(l);
 
         l.End();
     }
@@ -117,6 +172,7 @@ public class ModConfig : Mod {
         l.Begin(inRect);
 
         l.CheckboxLabeled("Save DebugLog auto-open value", ref Settings.saveDebugLogAutoOpen);
+        l.CheckboxLabeled("Remove mod upload dialog delay", ref Settings.removeModUploadDelay);
 
         l.End();
     }
