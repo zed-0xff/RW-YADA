@@ -7,4 +7,6 @@ namespace zed_0xff.YADA;
 public static class VDefOf
 {
     public static KeyBindingDef YADA_ToggleDebugLog;
+
+    public static StatCategoryDef YADA_Debug_CompProperties;
 }
