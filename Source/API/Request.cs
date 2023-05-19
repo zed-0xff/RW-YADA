@@ -14,10 +14,15 @@ abstract class Request {
     public XElement Process(){
         CallResult cr = processInternal();
         if( !autoEvent.WaitOne(TIMEOUT_MS) ){
+            finalize();
             throw new TimeoutException();
         }
 
+        finalize();
         return doc;
+    }
+
+    protected virtual void finalize(){
     }
 
     protected abstract CallResult processInternal();

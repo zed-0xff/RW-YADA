@@ -25,8 +25,10 @@ class Request_SetItemDescription : Request {
         SteamAPICall_t hAPICall = SteamUGC.SubmitItemUpdate(handle, null);
 
         var cr = CallResult<SubmitItemUpdateResult_t>.Create(delegate(SubmitItemUpdateResult_t result, bool bIOFailure){
-                doc.Add(new XElement("result", result.m_eResult.ToString()));
-                doc.Add(new XElement("bIOFailure", bIOFailure.ToString()));
+                if( bIOFailure ){
+                    doc.Add(new XElement("IOFailure", bIOFailure.ToString()));
+                }
+                doc.Add( DirectXmlSaver.XElementFromObject(result, result.GetType()) );
 
                 autoEvent.Set();
                 });

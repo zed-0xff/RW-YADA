@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using Verse;
+using UnityEngine;
 
 namespace zed_0xff.YADA.API;
 
@@ -55,11 +56,16 @@ class Server {
                 HttpListenerRequest request = context.Request;
                 HttpListenerResponse response = context.Response;
 
+                bool run0 = Application.runInBackground;
                 string responseString = null;
                 try {
                     XmlDocument xmlReq = new XmlDocument();
                     xmlReq.Load(request.InputStream);
                     Request r = DirectXmlToObject.ObjectFromXml<Request>(xmlReq.DocumentElement, false);
+                    if( !run0 ){
+                        // or SteamUGC reqs won't run while in bg
+                        Application.runInBackground = true;
+                    }
                     responseString = r.Process().ToString();
                 } catch (Exception ex) {
                     if( response.StatusCode == 200 ){
@@ -68,6 +74,10 @@ class Server {
                     } else {
                         // error message like "HTTP/1.1 411 Length Required" already handled by framework
                         continue;
+                    }
+                } finally {
+                    if( !run0 ){
+                        Application.runInBackground = run0;
                     }
                 }
 
