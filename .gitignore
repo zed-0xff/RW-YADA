@@ -1,6 +1,7 @@
 *.DotSettings
 *.DotSettings.user
 *.dll
+*.pdb
 .idea
 TODO
 obj
