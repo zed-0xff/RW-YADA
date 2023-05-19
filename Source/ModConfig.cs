@@ -31,7 +31,7 @@ public class YADASettings : ModSettings {
             Scribe_Values.Look(ref enable, "enable", false);
             Scribe_Values.Look(ref port,   "port",   8192);
 
-            APIServer.Toggle(enable, port);
+            API.Server.Toggle(enable, port);
         }
     }
     public APISettings api = new APISettings();

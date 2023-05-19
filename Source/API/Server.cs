@@ -1,12 +1,14 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace zed_0xff.YADA.API;
 
-class APIServer {
+class Server {
     static Instance instance = null;
 
     public static void Toggle(bool newEnable, int newPort){
@@ -53,20 +55,46 @@ class APIServer {
                 HttpListenerRequest request = context.Request;
                 HttpListenerResponse response = context.Response;
 
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("KeepAlive: {0}\n", request.KeepAlive);
-                sb.AppendFormat("Local end point: {0}\n", request.LocalEndPoint.ToString());
-                sb.AppendFormat("Remote end point: {0}\n", request.RemoteEndPoint.ToString());
-                sb.AppendFormat("Is local? {0}\n", request.IsLocal);
-                sb.AppendFormat("HTTP method: {0}\n", request.HttpMethod);
-                sb.AppendFormat("Protocol version: {0}\n", request.ProtocolVersion);
-                sb.AppendFormat("Is authenticated: {0}\n", request.IsAuthenticated);
-                sb.AppendFormat("Is secure: {0}\n", request.IsSecureConnection);
-                sb.AppendFormat("QueryString: {0}\n", request.QueryString);
-                sb.AppendFormat("RawUrl: {0}\n", request.RawUrl);
-                sb.AppendFormat("Headers: {0}\n", request.Headers);
+                string responseString = null;
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendFormat("KeepAlive: {0}\n", request.KeepAlive);
+                    sb.AppendFormat("Local end point: {0}\n", request.LocalEndPoint?.ToString());
+                    sb.AppendFormat("Remote end point: {0}\n", request.RemoteEndPoint?.ToString());
+                    sb.AppendFormat("Is local? {0}\n", request.IsLocal);
+                    sb.AppendFormat("HTTP method: {0}\n", request.HttpMethod);
+                    sb.AppendFormat("Protocol version: {0}\n", request.ProtocolVersion);
+                    sb.AppendFormat("Is authenticated: {0}\n", request.IsAuthenticated);
+                    sb.AppendFormat("Is secure: {0}\n", request.IsSecureConnection);
+                    sb.AppendFormat("QueryString: {0}\n", request.QueryString);
+                    foreach ( String k in request.QueryString.AllKeys ){
+                        sb.AppendFormat("    {0}: {1}\n", k, request.QueryString[k]);
+                    }
 
-                string responseString = sb.ToString();
+                    sb.AppendFormat("Url: {0}\n", request.Url);
+                    sb.AppendFormat("Url.Segments: {0}\n", string.Join(", ", request.Url.Segments));
+                    //sb.AppendFormat("RawUrl: {0}\n", request.RawUrl);
+                    sb.AppendFormat("Headers:\n");
+                    foreach ( String k in request.Headers.AllKeys ){
+                        sb.AppendFormat("    {0}: {1}\n", k, request.Headers[k]);
+                    }
+
+                    XmlDocument xmlDocument = new XmlDocument();
+                    xmlDocument.Load(request.InputStream);
+                    Request r = DirectXmlToObject.ObjectFromXml<Request>(xmlDocument.DocumentElement, false);
+                    Log.Warning("[d] " + r + ": " + r.foo);
+
+                    responseString = sb.ToString();
+                } catch (Exception ex) {
+                    if( response.StatusCode == 200 ){
+                        response.StatusCode = 500;
+                        responseString = ex.ToString();
+                    } else {
+                        // error message like "HTTP/1.1 411 Length Required" already handled by framework
+                        continue;
+                    }
+                }
+
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
                 response.ContentLength64 = buffer.Length;
                 System.IO.Stream output = response.OutputStream;
