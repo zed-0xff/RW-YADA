@@ -22,6 +22,7 @@ public class YADASettings : ModSettings {
 
     public bool saveDebugLogAutoOpen = true;
     public bool removeModUploadDelay = false;
+    public bool showWindowClass = true;
 
     public class APISettings : IExposable {
         public bool enable = false;
@@ -48,6 +49,7 @@ public class YADASettings : ModSettings {
 
         Scribe_Values.Look(ref saveDebugLogAutoOpen, "saveDebugLogAutoOpen", true);
         Scribe_Values.Look(ref removeModUploadDelay, "removeModUploadDelay", false);
+        Scribe_Values.Look(ref showWindowClass, "showWindowClass", true);
 
         Scribe_Deep.Look(ref api, "api");
         base.ExposeData();
@@ -208,6 +210,7 @@ public class ModConfig : Mod {
 
         l.CheckboxLabeled("Save DebugLog auto-open value", ref Settings.saveDebugLogAutoOpen);
         l.CheckboxLabeled("Remove mod upload dialog delay", ref Settings.removeModUploadDelay);
+        l.CheckboxLabeled("Show window class names", ref Settings.showWindowClass);
 
         l.End();
     }
