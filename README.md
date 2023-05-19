@@ -14,7 +14,9 @@ So simple!
     </postfix>
 </YADA.PatchDef>
 ```
+
 Or a bit more complex:
+
 ``` xml
 <YADA.PatchDef>
     <defName>YADA_freezeNeedsAtMax</defName>
@@ -40,6 +42,7 @@ Or a bit more complex:
     <debugSettingsCheckbox/>
 </YADA.PatchDef>
 ```
+
 See the [Patches](Defs/Patches) dir for more examples.
 
 I bet you've dreamt of writing the CIL opcodes in XML )) Can be done now!

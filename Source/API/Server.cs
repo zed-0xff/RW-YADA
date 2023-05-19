@@ -57,34 +57,14 @@ class Server {
 
                 string responseString = null;
                 try {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendFormat("KeepAlive: {0}\n", request.KeepAlive);
-                    sb.AppendFormat("Local end point: {0}\n", request.LocalEndPoint?.ToString());
-                    sb.AppendFormat("Remote end point: {0}\n", request.RemoteEndPoint?.ToString());
-                    sb.AppendFormat("Is local? {0}\n", request.IsLocal);
-                    sb.AppendFormat("HTTP method: {0}\n", request.HttpMethod);
-                    sb.AppendFormat("Protocol version: {0}\n", request.ProtocolVersion);
-                    sb.AppendFormat("Is authenticated: {0}\n", request.IsAuthenticated);
-                    sb.AppendFormat("Is secure: {0}\n", request.IsSecureConnection);
-                    sb.AppendFormat("QueryString: {0}\n", request.QueryString);
-                    foreach ( String k in request.QueryString.AllKeys ){
-                        sb.AppendFormat("    {0}: {1}\n", k, request.QueryString[k]);
-                    }
-
-                    sb.AppendFormat("Url: {0}\n", request.Url);
-                    sb.AppendFormat("Url.Segments: {0}\n", string.Join(", ", request.Url.Segments));
-                    //sb.AppendFormat("RawUrl: {0}\n", request.RawUrl);
-                    sb.AppendFormat("Headers:\n");
-                    foreach ( String k in request.Headers.AllKeys ){
-                        sb.AppendFormat("    {0}: {1}\n", k, request.Headers[k]);
-                    }
-
-                    XmlDocument xmlDocument = new XmlDocument();
-                    xmlDocument.Load(request.InputStream);
-                    Request r = DirectXmlToObject.ObjectFromXml<Request>(xmlDocument.DocumentElement, false);
-                    Log.Warning("[d] " + r + ": " + r.foo);
-
-                    responseString = sb.ToString();
+                    XmlDocument xmlReq = new XmlDocument();
+                    xmlReq.Load(request.InputStream);
+                    Request r = DirectXmlToObject.ObjectFromXml<Request>(xmlReq.DocumentElement, false);
+                    XmlDocument xmlResp = r.Process();
+                    StringWriter sw = new StringWriter();
+                    XmlTextWriter xw = new XmlTextWriter(sw);
+                    xmlResp.WriteTo(xw);
+                    responseString = sw.ToString();
                 } catch (Exception ex) {
                     if( response.StatusCode == 200 ){
                         response.StatusCode = 500;
