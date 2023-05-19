@@ -60,11 +60,7 @@ class Server {
                     XmlDocument xmlReq = new XmlDocument();
                     xmlReq.Load(request.InputStream);
                     Request r = DirectXmlToObject.ObjectFromXml<Request>(xmlReq.DocumentElement, false);
-                    XmlDocument xmlResp = r.Process();
-                    StringWriter sw = new StringWriter();
-                    XmlTextWriter xw = new XmlTextWriter(sw);
-                    xmlResp.WriteTo(xw);
-                    responseString = sw.ToString();
+                    responseString = r.Process().ToString();
                 } catch (Exception ex) {
                     if( response.StatusCode == 200 ){
                         response.StatusCode = 500;

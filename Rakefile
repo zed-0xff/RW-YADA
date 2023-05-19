@@ -14,3 +14,17 @@ task :xml do
   resp = Net::HTTP.post(URI('http://127.0.0.1:8192/'), xml)
   puts resp.body
 end
+
+task :foo do
+  mod = RimTool::Mod.new "."
+  builder = Nokogiri::XML::Builder.new do |xml|
+    xml.root("Class" => "zed_0xff.YADA.API.Request_SendQueryUGCRequest") {
+      xml.PublishedFileIds {
+        xml.li mod.id
+      }
+    }
+  end
+  xml = builder.to_xml
+  resp = Net::HTTP.post(URI('http://127.0.0.1:8192/'), xml)
+  puts resp.body
+end
