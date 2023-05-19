@@ -80,6 +80,12 @@ standard ctrl/shift modifier keys are honored
 
 ![](screens/yada4.jpg)
 
+## You may also like...
+
+[![Connected Bed](https://steamuserimages-a.akamaihd.net/ugc/2031731300513128421/33F0CC11BA63BE38DEB3FECEB9AB5B15114EE997/?imw=268&imh=151&ima=fit&impolicy=Letterbox)](https://steamcommunity.com/sharedfiles/filedetails/?id=2957904090)
+[![Loft Bed](https://steamuserimages-a.akamaihd.net/ugc/2030602392616950419/CAF6F6AB4C5D99E729AD70C683C0D78169B028BF/?imw=268&imh=151&ima=fit&impolicy=Letterbox)](https://steamcommunity.com/sharedfiles/filedetails/?id=2961708299)
+[![Force Xenogerm Implantation](https://steamuserimages-a.akamaihd.net/ugc/2031731300509178205/4244135E9E34C7B13207B90A6C7FA487AA5DEBC4/?imw=268&imh=151&ima=fit&impolicy=Letterbox)](https://steamcommunity.com/sharedfiles/filedetails/?id=2958300354)
+
 ### Links:
 
 * [Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2971543841)
@@ -87,4 +93,4 @@ standard ctrl/shift modifier keys are honored
 * [Patreon](https://patreon.com/zed_0xff)
 * [Ko-fi](https://ko-fi.com/zed_0xff)
 
-### License: MIT
+License: MIT
