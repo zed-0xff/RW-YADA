@@ -23,6 +23,19 @@ public class YADASettings : ModSettings {
     public bool saveDebugLogAutoOpen = true;
     public bool removeModUploadDelay = false;
 
+    public class APISettings : IExposable {
+        public bool enable = false;
+        public int port = 8192;
+
+        public void ExposeData() {
+            Scribe_Values.Look(ref enable, "enable", false);
+            Scribe_Values.Look(ref port,   "port",   8192);
+
+            APIServer.Toggle(enable, port);
+        }
+    }
+    public APISettings api = new APISettings();
+
     public override void ExposeData() {
         Scribe_Values.Look(ref drawLogOverlay, "drawLogOverlay", false);
         Scribe_Values.Look(ref logX, "log.x", 8);
@@ -35,7 +48,13 @@ public class YADASettings : ModSettings {
 
         Scribe_Values.Look(ref saveDebugLogAutoOpen, "saveDebugLogAutoOpen", true);
         Scribe_Values.Look(ref removeModUploadDelay, "removeModUploadDelay", false);
+
+        Scribe_Deep.Look(ref api, "api");
         base.ExposeData();
+
+        if( Scribe.mode == LoadSaveMode.PostLoadInit ){
+            if( api == null ) api = new APISettings();
+        }
     }
 }
 
@@ -68,6 +87,7 @@ public class ModConfig : Mod {
             new TabRecord("General".Translate(), () => { PageIndex = 0; WriteSettings(); }, PageIndex == 0),
             new TabRecord("Log overlay", ()         => { PageIndex = 1; WriteSettings(); }, PageIndex == 1),
             new TabRecord("Tools", ()               => { PageIndex = 2; WriteSettings(); }, PageIndex == 2),
+            new TabRecord("API", ()                 => { PageIndex = 3; WriteSettings(); }, PageIndex == 3),
         };
 
         TabDrawer.DrawTabs(tabRect, tabs);
@@ -83,10 +103,25 @@ public class ModConfig : Mod {
             case 2:
                 draw_tools(mainRect.ContractedBy(15f));
                 break;
+            case 3:
+                draw_api(mainRect.ContractedBy(15f));
+                break;
             default:
                 break;
         }
         base.DoSettingsWindowContents(inRect);
+    }
+
+    void draw_api(Rect inRect){
+        Listing_Standard l = new Listing_Standard();
+        l.Begin(inRect);
+
+        string buf = null;
+
+        l.CheckboxLabeled("enable", ref Settings.api.enable);
+        l.TextFieldNumericLabeled("port: ", ref Settings.api.port, ref buf, 1024, 65535);
+
+        l.End();
     }
 
     static class DisasmTool {
