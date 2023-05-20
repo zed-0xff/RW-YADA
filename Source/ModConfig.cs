@@ -10,19 +10,8 @@ using UnityEngine;
 namespace zed_0xff.YADA;
 
 public class YADASettings : ModSettings {
-    public bool drawLogOverlay = false;
 
-    public int logX = 8;
-    public int logY = 105;
-    public int logW = 1024;
-    public int logH = 732;
-    public float logHue = 0.75f;
-    public float logOpa = 0.89f;
-    public float logLineSpacing = 0.88f;
-
-    public bool saveDebugLogAutoOpen = true;
-    public bool removeModUploadDelay = false;
-    public bool showWindowClass = true;
+    public APISettings api = new APISettings();
 
     public class APISettings : IExposable {
         public bool enable = false;
@@ -35,7 +24,22 @@ public class YADASettings : ModSettings {
             API.Server.Toggle(enable, port);
         }
     }
-    public APISettings api = new APISettings();
+
+    public bool drawLogOverlay = false;
+    public int logX = 8;
+    public int logY = 105;
+    public int logW = 1024;
+    public int logH = 732;
+    public float logHue = 0.75f;
+    public float logOpa = 0.89f;
+    public float logLineSpacing = 0.88f;
+
+    public bool saveDebugLogAutoOpen = true;
+    public bool removeModUploadDelay = false;
+    public bool showWindowClass = true;
+
+    public string tools_className = "Page_ModsConfig";
+    public string tools_methodName = "StorytellerUtility.DefaultThreatPointsNow";
 
     public override void ExposeData() {
         Scribe_Values.Look(ref drawLogOverlay, "drawLogOverlay", false);
@@ -50,6 +54,9 @@ public class YADASettings : ModSettings {
         Scribe_Values.Look(ref saveDebugLogAutoOpen, "saveDebugLogAutoOpen", true);
         Scribe_Values.Look(ref removeModUploadDelay, "removeModUploadDelay", false);
         Scribe_Values.Look(ref showWindowClass, "showWindowClass", true);
+
+        Scribe_Values.Look(ref tools_className, "tools_className", "Page_ModsConfig");
+        Scribe_Values.Look(ref tools_methodName, "tools_methodName", "StorytellerUtility.DefaultThreatPointsNow");
 
         Scribe_Deep.Look(ref api, "api");
         base.ExposeData();
@@ -127,14 +134,13 @@ public class ModConfig : Mod {
     }
 
     static class DisasmTool {
-        static string fqmn = "StorytellerUtility.DefaultThreatPointsNow";
         static string msg;
 
         public static void Draw(Listing_Standard l){
             string error = null;
-            fqmn = l.TextEntryLabeled("ClassName.MethodName: ", fqmn);
+            Settings.tools_methodName = l.TextEntryLabeled("ClassName.MethodName: ", Settings.tools_methodName);
             if( l.ButtonTextLabeled("", "disasm to debug log") ){
-                MethodInfo mi = Utils.fqmnToMethodInfo(fqmn, out error);
+                MethodInfo mi = Utils.fqmnToMethodInfo(Settings.tools_methodName, out error);
                 if( mi != null && error == null ){
                     StringBuilder sb = new StringBuilder();
                     msg = "wrote " + Utils.Disasm(mi, sb) + " instructions to debug log";
@@ -149,23 +155,28 @@ public class ModConfig : Mod {
     }
 
     static class NestedTypesListerTool {
-        static string className = "Page_ModsConfig";
         static string msg;
-        static bool logMethods;
+        static bool logSelfMethods;
+        static bool logNestedMethods;
         static bool disasmMethods;
 
         public static void Draw(Listing_Standard l){
             string error = null;
-            className = l.TextEntryLabeled("ClassName: ", className);
-            l.CheckboxLabeled("show methods also", ref logMethods);
+            Settings.tools_className = l.TextEntryLabeled("ClassName: ", Settings.tools_className);
+            l.CheckboxLabeled("show ClassName's methods", ref logSelfMethods);
+            l.CheckboxLabeled("show nested methods", ref logNestedMethods);
             l.CheckboxLabeled("disasm them all", ref disasmMethods);
 
             if( l.ButtonTextLabeled("", "list nested types to debug log") ){
-                Type t = AccessTools.TypeByName(className);
+                Type t = AccessTools.TypeByName(Settings.tools_className);
                 if( t == null ){
                     error = "cannot find class";
                 } else {
                     StringBuilder sb = new StringBuilder();
+                    if( logSelfMethods ){
+                        sb.Append("[d] methods of " + t + ":");
+                        drawMethods(t, sb, 4);
+                    }
                     sb.Append("[d] nested types of " + t + ":");
                     Type[] nestedTypes = t.GetNestedTypes(AccessTools.all);
                     if( nestedTypes.Length == 0 ){
@@ -173,13 +184,8 @@ public class ModConfig : Mod {
                     } else {
                         foreach( Type nt in nestedTypes ){
                             sb.AppendLineIfNotEmpty().Append("    " + nt);
-                            if( logMethods ){
-                                foreach( var m in nt.GetMethods(AccessTools.all)){
-                                    sb.AppendLineIfNotEmpty().Append("        " + m);
-                                    if( disasmMethods ){
-                                        Utils.Disasm(m, sb, showPrefix: false, indent: 12);
-                                    }
-                                }
+                            if( logNestedMethods ){
+                                drawMethods(nt, sb, 8);
                             }
                         }
                         msg = "wrote " + nestedTypes.Length + " types to debug log";
@@ -191,6 +197,15 @@ public class ModConfig : Mod {
                 msg = error.Colorize(Color.red);
             }
             l.LabelDouble("", msg);
+        }
+
+        static void drawMethods(Type t, StringBuilder sb, int indent){
+            foreach( MethodInfo m in t.GetMethods(AccessTools.all)){
+                sb.AppendLineIfNotEmpty().Append(new string(' ', indent) + String.Format("{0,-20}  {1}()", m.ReturnType, m.Name));
+                if( disasmMethods ){
+                    Utils.Disasm(m, sb, showPrefix: false, indent: indent+4);
+                }
+            }
         }
     }
 

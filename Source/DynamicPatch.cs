@@ -232,7 +232,7 @@ public class DynamicPatch {
         sb.AppendLineIfNotEmpty().Append("[d] " + t);
         sb.AppendLineIfNotEmpty();
 
-        foreach( MethodInfo mi in t.GetMethods(AccessTools.allDeclared)){
+        foreach( MethodInfo mi in t.GetMethods(AccessTools.all)){
             Utils.Disasm(mi, sb);
         }
         Log.Message(sb.ToString());

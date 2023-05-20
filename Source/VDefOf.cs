@@ -8,5 +8,7 @@ public static class VDefOf
 {
     public static KeyBindingDef YADA_ToggleDebugLog;
 
+    public static StatCategoryDef YADA_Debug;
     public static StatCategoryDef YADA_Debug_CompProperties;
+    public static StatCategoryDef YADA_Debug_ModExtensions;
 }

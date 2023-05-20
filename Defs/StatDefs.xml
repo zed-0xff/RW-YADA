@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <StatCategoryDef>
+    <defName>YADA_Debug</defName>
+    <label>YADA Debug</label>
+    <displayOrder>99999</displayOrder>
+    <displayAllByDefault>true</displayAllByDefault>
+  </StatCategoryDef>
+
+  <StatCategoryDef>
     <defName>YADA_Debug_CompProperties</defName>
     <label>YADA Debug: CompProperties</label>
+    <displayOrder>99999</displayOrder>
+    <displayAllByDefault>true</displayAllByDefault>
+  </StatCategoryDef>
+
+  <StatCategoryDef>
+    <defName>YADA_Debug_ModExtensions</defName>
+    <label>YADA Debug: ModExtensions</label>
     <displayOrder>99999</displayOrder>
     <displayAllByDefault>true</displayAllByDefault>
   </StatCategoryDef>
