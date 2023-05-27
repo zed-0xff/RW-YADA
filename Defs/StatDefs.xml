@@ -20,4 +20,11 @@
     <displayOrder>99999</displayOrder>
     <displayAllByDefault>true</displayAllByDefault>
   </StatCategoryDef>
+
+  <StatCategoryDef>
+    <defName>YADA_Debug_Graphic</defName>
+    <label>YADA Debug: Graphic</label>
+    <displayOrder>99999</displayOrder>
+    <displayAllByDefault>true</displayAllByDefault>
+  </StatCategoryDef>
 </Defs>

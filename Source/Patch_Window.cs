@@ -10,6 +10,9 @@ static class Patch__Window__InnerWindowOnGUI {
         if( !ModConfig.Settings.showWindowClass ) return;
         if( !Prefs.DevMode ) return;
 
+        // not looks good
+        if( __instance is FloatMenu || __instance is ImmediateWindow ) return;
+
         var prevFont = Text.Font;
         var prevColor = GUI.color;
 

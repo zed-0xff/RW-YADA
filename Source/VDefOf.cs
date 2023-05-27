@@ -10,5 +10,6 @@ public static class VDefOf
 
     public static StatCategoryDef YADA_Debug;
     public static StatCategoryDef YADA_Debug_CompProperties;
+    public static StatCategoryDef YADA_Debug_Graphic;
     public static StatCategoryDef YADA_Debug_ModExtensions;
 }
