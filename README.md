@@ -80,6 +80,10 @@ standard ctrl/shift modifier keys are honored
 
 ![](screens/yada4.jpg)
 
+## 6. Texture saver
+Show "Save as filename.png" option when right-clicking any icon (e.g. in item's InfoCard)
+(disabled by default, enable in mod settings)
+
 ## You may also like...
 
 [![Connected Bed](https://steamuserimages-a.akamaihd.net/ugc/2031731300513128421/33F0CC11BA63BE38DEB3FECEB9AB5B15114EE997/?imw=268&imh=151&ima=fit&impolicy=Letterbox)](https://steamcommunity.com/sharedfiles/filedetails/?id=2957904090)

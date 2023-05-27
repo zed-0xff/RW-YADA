@@ -37,6 +37,9 @@ public class YADASettings : ModSettings {
     public bool saveDebugLogAutoOpen = true;
     public bool removeModUploadDelay = false;
     public bool showWindowClass = true;
+    public bool textureSaver = false;
+
+    public string textureSavePath = GenFilePaths.SaveDataFolderPath;
 
     public string tools_className = "Page_ModsConfig";
     public string tools_methodName = "StorytellerUtility.DefaultThreatPointsNow";
@@ -54,6 +57,8 @@ public class YADASettings : ModSettings {
         Scribe_Values.Look(ref saveDebugLogAutoOpen, "saveDebugLogAutoOpen", true);
         Scribe_Values.Look(ref removeModUploadDelay, "removeModUploadDelay", false);
         Scribe_Values.Look(ref showWindowClass, "showWindowClass", true);
+        Scribe_Values.Look(ref textureSaver, "textureSaver", false);
+        Scribe_Values.Look(ref textureSavePath, "textureSavePath", GenFilePaths.SaveDataFolderPath);
 
         Scribe_Values.Look(ref tools_className, "tools_className", "Page_ModsConfig");
         Scribe_Values.Look(ref tools_methodName, "tools_methodName", "StorytellerUtility.DefaultThreatPointsNow");
@@ -229,6 +234,8 @@ public class ModConfig : Mod {
         l.CheckboxLabeled("Save DebugLog auto-open value", ref Settings.saveDebugLogAutoOpen);
         l.CheckboxLabeled("Remove mod upload dialog delay", ref Settings.removeModUploadDelay);
         l.CheckboxLabeled("Show window class names", ref Settings.showWindowClass);
+        l.CheckboxLabeled("Show \"Save as filename.png\" option when right-clicking any icon (e.g. in InfoCard)", ref Settings.textureSaver);
+        Settings.textureSavePath = l.TextEntryLabeled("Texture save path: ", Settings.textureSavePath);
 
         l.End();
     }
