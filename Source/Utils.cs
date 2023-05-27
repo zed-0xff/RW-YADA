@@ -32,8 +32,8 @@ public static class Utils {
         return mi;
     }
 
-    public static int Disasm(MethodInfo mi, StringBuilder sb, bool showPrefix = true, int indent = 4){
-        var instructions = PatchProcessor.GetOriginalInstructions(mi);
+    public static int Disasm(MethodInfo mi, StringBuilder sb, bool showPrefix = true, int indent = 4, bool original = true){
+        var instructions = original ? PatchProcessor.GetOriginalInstructions(mi) : PatchProcessor.GetCurrentInstructions(mi);
         if( showPrefix ){
             sb.AppendLineIfNotEmpty().Append("[d] " + mi);
         }

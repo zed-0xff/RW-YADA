@@ -143,7 +143,7 @@ public class ModConfig : Mod {
                 MethodInfo mi = Utils.fqmnToMethodInfo(Settings.tools_methodName, out error);
                 if( mi != null && error == null ){
                     StringBuilder sb = new StringBuilder();
-                    msg = "wrote " + Utils.Disasm(mi, sb) + " instructions to debug log";
+                    msg = "wrote " + Utils.Disasm(mi, sb, original: original) + " instructions to debug log";
                     Log.Message(sb.ToString());
                 }
             }
@@ -203,15 +203,18 @@ public class ModConfig : Mod {
             foreach( MethodInfo m in t.GetMethods(AccessTools.all)){
                 sb.AppendLineIfNotEmpty().Append(new string(' ', indent) + String.Format("{0,-20}  {1}()", m.ReturnType, m.Name));
                 if( disasmMethods ){
-                    Utils.Disasm(m, sb, showPrefix: false, indent: indent+4);
+                    Utils.Disasm(m, sb, showPrefix: false, indent: indent+4, original);
                 }
             }
         }
     }
 
+    static bool original;
     void draw_tools(Rect inRect){
         Listing_Standard l = new Listing_Standard();
         l.Begin(inRect);
+
+        l.CheckboxLabeled("disasm original (unpatched) instructions", ref original);
 
         DisasmTool.Draw(l);
         NestedTypesListerTool.Draw(l);

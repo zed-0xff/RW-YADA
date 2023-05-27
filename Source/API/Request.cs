@@ -13,9 +13,11 @@ abstract class Request {
 
     public XElement Process(){
         CallResult cr = processInternal();
-        if( !autoEvent.WaitOne(TIMEOUT_MS) ){
-            finalize();
-            throw new TimeoutException();
+        if( cr != null ){
+            if( !autoEvent.WaitOne(TIMEOUT_MS) ){
+                finalize();
+                throw new TimeoutException();
+            }
         }
 
         finalize();
