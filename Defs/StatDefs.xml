@@ -3,7 +3,7 @@
   <StatCategoryDef>
     <defName>YADA_Debug</defName>
     <label>YADA Debug</label>
-    <displayOrder>99999</displayOrder>
+    <displayOrder>99990</displayOrder>
     <displayAllByDefault>true</displayAllByDefault>
   </StatCategoryDef>
 

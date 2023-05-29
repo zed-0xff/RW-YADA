@@ -1,6 +1,7 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using RimWorld;
@@ -138,6 +139,28 @@ public class ModConfig : Mod {
         l.End();
     }
 
+    static class TextureSaveTool {
+        static string texPath;
+
+        public static void Draw(Listing_Standard l){
+            texPath = l.TextEntryLabeled("texPath: ", texPath);
+            if( l.ButtonTextLabeled("", "save texture(s)") ){
+                Texture2D tex = Resources.Load<Texture2D>(texPath);
+                if( tex != null ){
+                    string fname = ModConfig.Settings.textureSavePath + Path.DirectorySeparatorChar.ToString() + tex.name + ".png";
+                    TextureAtlasHelper.WriteDebugPNG(tex, fname);
+                    Messages.Message(fname + " saved", MessageTypeDefOf.PositiveEvent, historical: false);
+                } else {
+                    foreach(Texture2D tex2 in ContentFinder<Texture2D>.GetAllInFolder(texPath)){
+                        string fname = ModConfig.Settings.textureSavePath + Path.DirectorySeparatorChar.ToString() + tex2.name + ".png";
+                        TextureAtlasHelper.WriteDebugPNG(tex2, fname);
+                        Messages.Message(fname + " saved", MessageTypeDefOf.PositiveEvent, historical: false);
+                    }
+                }
+            }
+        }
+    }
+
     static class DisasmTool {
         static string msg;
 
@@ -223,6 +246,7 @@ public class ModConfig : Mod {
 
         DisasmTool.Draw(l);
         NestedTypesListerTool.Draw(l);
+        TextureSaveTool.Draw(l);
 
         l.End();
     }
