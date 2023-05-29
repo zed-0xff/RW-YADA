@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [HarmonyPatch(typeof(Root), nameof(Root.OnGUI))]
 static class Patch__Root__OnGUI {

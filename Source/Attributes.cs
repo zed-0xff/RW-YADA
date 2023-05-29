@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
 public class FieldLabel : Attribute {

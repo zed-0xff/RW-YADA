@@ -2,7 +2,7 @@ using Steamworks;
 using RimWorld;
 using Verse;
 
-namespace zed_0xff.YADA.API;
+namespace YADA.API;
 
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414

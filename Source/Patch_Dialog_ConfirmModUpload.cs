@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [StaticConstructorOnStartup]
 [HarmonyPatch(typeof(Dialog_ConfirmModUpload), nameof(Dialog_ConfirmModUpload.DoWindowContents))]

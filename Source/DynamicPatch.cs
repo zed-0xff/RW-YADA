@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 public class DynamicPatch {
 

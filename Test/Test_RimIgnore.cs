@@ -1,5 +1,5 @@
 using System.IO;
-using zed_0xff.YADA;
+using YADA;
 
 class Test_RimIgnore {
     // there's no Path.GetRelativePath in net472 :(

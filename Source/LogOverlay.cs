@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 class LogOverlay {
 

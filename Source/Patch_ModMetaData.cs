@@ -3,7 +3,7 @@ using System.IO;
 using System;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [HarmonyPatch(typeof(ModMetaData), nameof(ModMetaData.PrepareForWorkshopUpload))]
 static class Patch_PrepareForWorkshopUpload {

@@ -2,7 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [HarmonyPatch(typeof(Window), "InnerWindowOnGUI")]
 static class Patch__Window__InnerWindowOnGUI {

@@ -7,7 +7,7 @@ using System.Xml;
 using Verse;
 using UnityEngine;
 
-namespace zed_0xff.YADA.API;
+namespace YADA.API;
 
 class Server {
     static Instance instance = null;

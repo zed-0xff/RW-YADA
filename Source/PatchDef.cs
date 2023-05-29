@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414

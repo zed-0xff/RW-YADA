@@ -1,7 +1,7 @@
 using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
-using zed_0xff.YADA;
+using YADA;
 using Verse;
 
 class Test_PatchDef {

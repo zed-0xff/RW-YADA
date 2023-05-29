@@ -6,7 +6,7 @@ using System;
 using HarmonyLib;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 public class Parser {
     public PatchDef.Anyfix anyfix;

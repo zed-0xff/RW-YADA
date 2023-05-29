@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [HarmonyPatch(typeof(DebugWindowsOpener), nameof(DebugWindowsOpener.DevToolStarterOnGUI))]
 static class Patch_DevToolStarterOnGUI {

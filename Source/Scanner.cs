@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using Verse; // only for Log()
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 public class Scanner {
 

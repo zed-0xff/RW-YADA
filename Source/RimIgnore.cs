@@ -1,4 +1,4 @@
-namespace zed_0xff.YADA;
+namespace YADA;
 
 public class RimIgnore {
 //    /// <summary>

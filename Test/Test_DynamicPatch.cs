@@ -1,7 +1,7 @@
 using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
-using zed_0xff.YADA;
+using YADA;
 
 // Dereference of a possibly null reference
 #pragma warning disable CS8602
@@ -15,7 +15,7 @@ class Test_DynamicPatch {
         pd.methodName = "test";
         pd.resultType = resultType;
 
-        Harmony harmony = new Harmony("zed_0xff.YADA");
+        Harmony harmony = new Harmony("YADA");
         var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("yada_dyn_ass"), AssemblyBuilderAccess.Run);
         ModuleBuilder mb = assembly.DefineDynamicModule("yada_dyn_mod");
 

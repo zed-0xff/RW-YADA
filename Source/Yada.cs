@@ -4,7 +4,7 @@ using System.Reflection;
 using System;
 using HarmonyLib;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 class Yada : WorldComponent {
     public Yada(World w) : base(w) {

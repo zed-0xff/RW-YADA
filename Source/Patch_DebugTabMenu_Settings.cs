@@ -3,7 +3,7 @@ using Verse;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 static class Patch_DebugTabMenu_Settings {
     // add custom settings to debug menu

@@ -1,7 +1,7 @@
 using RimWorld;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [DefOf]
 public static class VDefOf

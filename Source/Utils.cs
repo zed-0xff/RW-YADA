@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 public static class Utils {
     // fqmn = fully qualified method name :) like "RimWorld.Need::get_MaxLevel"

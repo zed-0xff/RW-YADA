@@ -6,7 +6,7 @@ using Verse;
 
 using Steamworks;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 //[HarmonyPatch(typeof(WorkshopItem), nameof(WorkshopItem.MakeFrom))]
 //static class Patch__WorkshopItem__MakeFrom {

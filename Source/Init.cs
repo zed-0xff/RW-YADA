@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [StaticConstructorOnStartup]
 public class Init {

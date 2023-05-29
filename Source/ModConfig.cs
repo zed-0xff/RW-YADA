@@ -8,7 +8,7 @@ using RimWorld;
 using Verse;
 using UnityEngine;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 public class YADASettings : ModSettings {
 
@@ -83,7 +83,7 @@ public class ModConfig : Mod {
         RootDir = content.RootDir;
         Settings = GetSettings<YADASettings>();
         // apply YADA core patches here, before Init.Init() to hook Root.OnGUI early
-        Harmony harmony = new Harmony("zed_0xff.YADA");
+        Harmony harmony = new Harmony("YADA");
         harmony.PatchAll();
     }
 

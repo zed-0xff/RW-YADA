@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 using Verse;
 using UnityEngine;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [HarmonyPatch(typeof(HealthCardUtility), "DrawHediffRow")]
 static class Patch_DrawHediffRow {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [HarmonyPatch(typeof(Def), nameof(Def.SpecialDisplayStats))]
 static class Patch__Def__SpecialDisplayStats

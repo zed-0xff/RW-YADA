@@ -7,7 +7,7 @@ using Verse;
 
 using Steamworks;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 //[HarmonyPatch(typeof(Page_ModsConfig), "DoModInfo")]
 //static class Patch_Page_ModsConfig {

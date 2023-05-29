@@ -5,7 +5,7 @@ using System.IO;
 using UnityEngine;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 // "save image" button on any item icon
 [HarmonyPatch(typeof(Widgets), nameof(Widgets.DrawTextureFitted))]

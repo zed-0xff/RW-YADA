@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Xml.Linq;
 
-namespace zed_0xff.YADA.API;
+namespace YADA.API;
 
 abstract class Request {
     protected const int TIMEOUT_MS = 15000;

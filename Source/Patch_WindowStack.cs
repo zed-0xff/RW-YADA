@@ -7,7 +7,7 @@ using System;
 using UnityEngine;
 using Verse;
 
-namespace zed_0xff.YADA;
+namespace YADA;
 
 [HarmonyPatch(typeof(WindowStack), nameof(WindowStack.Add))]
 static class Patch__WindowStack__Add {

@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using zed_0xff.YADA;
+using YADA;
 
 string workshop_path = Path.Combine(
         System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
