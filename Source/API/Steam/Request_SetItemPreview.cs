@@ -9,11 +9,11 @@ namespace YADA.API;
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414
 
-class Request_SetItemPreview : Request {
+class Request_SetItemPreview : SteamRequest {
     public PublishedFileId_t PublishedFileId = PublishedFileId_t.Invalid;
     public string PreviewFile;
 
-    protected override CallResult processInternal(){
+    protected override CallResult processSteamInternal(){
         if( PublishedFileId == PublishedFileId_t.Invalid ){
             throw new ArgumentException("PublishedFileId is not set");
         }

@@ -11,7 +11,7 @@ namespace YADA.API;
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414
 
-class Request_QueryUGCDetailsRequest : Request {
+class Request_QueryUGCDetailsRequest : SteamRequest {
     public List<PublishedFileId_t> PublishedFileIds;
     public bool ReturnAdditionalPreviews;
     public bool ReturnChildren;
@@ -26,7 +26,7 @@ class Request_QueryUGCDetailsRequest : Request {
     private int detailsQueryCount;
     private UGCQueryHandle_t handle;
 
-    protected override CallResult processInternal(){
+    protected override CallResult processSteamInternal(){
         detailsQueryCount = PublishedFileIds.Count();
         handle = SteamUGC.CreateQueryUGCDetailsRequest(PublishedFileIds.ToArray(), (uint)detailsQueryCount);
 
@@ -56,6 +56,7 @@ class Request_QueryUGCDetailsRequest : Request {
 
     protected override void finalize(){
         SteamUGC.ReleaseQueryUGCRequest(handle);
+        base.finalize();
     }
 
     void OnGotItemDetails(SteamUGCQueryCompleted_t result, bool bIOFailure){

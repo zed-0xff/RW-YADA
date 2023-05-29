@@ -1,4 +1,3 @@
-using Steamworks;
 using RimWorld;
 using Verse;
 
@@ -11,8 +10,7 @@ class Request_Message : Request {
     public string Text;
     public bool historical;
 
-    protected override CallResult processInternal(){
+    protected override void processInternal(){
         Messages.Message( Text, MessageTypeDefOf.SilentInput, historical );
-        return null;
     }
 }

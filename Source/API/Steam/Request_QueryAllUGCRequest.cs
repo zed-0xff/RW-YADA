@@ -13,7 +13,7 @@ namespace YADA.API;
 
 // XXX unfinished
 
-class Request_CreateQueryAllUGCRequest : Request {
+class Request_CreateQueryAllUGCRequest : SteamRequest {
     // https://partner.steamgames.com/doc/api/ISteamUGC#EUGCQuery
     public EUGCQuery eQueryType;
     // https://partner.steamgames.com/doc/api/ISteamUGC#EUGCMatchingUGCType
@@ -22,7 +22,7 @@ class Request_CreateQueryAllUGCRequest : Request {
     public AppId_t nConsumerAppID = (AppId_t)294100;
     public int unPage = 1;
 
-    protected override CallResult processInternal(){
+    protected override CallResult processSteamInternal(){
         UGCQueryHandle_t handle = SteamUGC.CreateQueryAllUGCRequest( eQueryType, eMatchingeMatchingUGCTypeFileType, nCreatorAppID, nConsumerAppID, (uint)unPage );
         return null;
     }
