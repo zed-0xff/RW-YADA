@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -69,8 +70,18 @@ class Server {
                     responseString = r.Process().ToString();
                 } catch (Exception ex) {
                     if( response.StatusCode == 200 ){
-                        response.StatusCode = 500;
-                        responseString = ex.ToString();
+                        if( ex is MissingMethodException && ex.Message == "Default constructor not found for type YADA.API.Request" ){
+                            response.StatusCode = 400;
+                            responseString = "Invalid or missing Request Class\n";
+                        } else {
+                            if( ex is ArgumentException )
+                                response.StatusCode = 400;
+                            else if( ex is KeyNotFoundException )
+                                response.StatusCode = 404;
+                            else
+                            response.StatusCode = 500;
+                            responseString = ex.ToString();
+                        }
                     } else {
                         // error message like "HTTP/1.1 411 Length Required" already handled by framework
                         continue;
