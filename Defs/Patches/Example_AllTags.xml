@@ -6,8 +6,9 @@
     <defName>YADA_freezeNeedsAtHalf</defName>
     <label>Freeze needs at 0.5</label>
 
-    <enabled>false</enabled>
+    <enabled>false</enabled> <!-- ignore this patch completely if false -->
 
+    <HarmonyDebug>false</HarmonyDebug>
     <HarmonyPriority>555</HarmonyPriority>
     <HarmonyAfter>
       <li>foo</li>
