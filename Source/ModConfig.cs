@@ -39,6 +39,8 @@ public class YADASettings : ModSettings {
     public bool removeModUploadDelay = false;
     public bool showWindowClass = true;
     public bool textureSaver = false;
+    public bool harmonyDebugLocal = false;
+    public bool harmonyDebugGlobal = false;
 
     public string textureSavePath = GenFilePaths.SaveDataFolderPath;
 
@@ -55,6 +57,8 @@ public class YADASettings : ModSettings {
         Scribe_Values.Look(ref logOpa, "log.opacity", 0.89f);
         Scribe_Values.Look(ref logLineSpacing, "log.lineSpacing", 0.88f);
 
+        Scribe_Values.Look(ref harmonyDebugLocal, "harmonyDebugLocal", false);
+        Scribe_Values.Look(ref harmonyDebugGlobal, "harmonyDebugGlobal", false);
         Scribe_Values.Look(ref saveDebugLogAutoOpen, "saveDebugLogAutoOpen", true);
         Scribe_Values.Look(ref removeModUploadDelay, "removeModUploadDelay", false);
         Scribe_Values.Look(ref showWindowClass, "showWindowClass", true);
@@ -83,6 +87,16 @@ public class ModConfig : Mod {
         RootDir = content.RootDir;
         Settings = GetSettings<YADASettings>();
         // apply YADA core patches here, before Init.Init() to hook Root.OnGUI early
+        if( Settings.harmonyDebugLocal ){
+            Settings.harmonyDebugLocal = false;
+            Settings.Write();
+            Harmony.DEBUG = true;
+        }
+        if( Settings.harmonyDebugGlobal ){
+            Settings.harmonyDebugGlobal = false;
+            Settings.Write();
+            Environment.SetEnvironmentVariable("HARMONY_DEBUG","1");
+        }
         Harmony harmony = new Harmony("YADA");
         harmony.PatchAll();
     }
@@ -260,6 +274,8 @@ public class ModConfig : Mod {
         l.CheckboxLabeled("Show window class names", ref Settings.showWindowClass);
         l.CheckboxLabeled("Show \"Save as filename.png\" option when right-clicking any icon (e.g. in InfoCard)", ref Settings.textureSaver);
         Settings.textureSavePath = l.TextEntryLabeled("Texture save path: ", Settings.textureSavePath);
+        l.CheckboxLabeled("Enable local Harmony debug for the next game run, turn it off automatically then", ref Settings.harmonyDebugLocal);
+        l.CheckboxLabeled("Enable global Harmony debug for the next game run, turn it off automatically then", ref Settings.harmonyDebugGlobal);
 
         l.End();
     }
