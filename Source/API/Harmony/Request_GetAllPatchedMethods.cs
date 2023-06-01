@@ -11,15 +11,10 @@ namespace YADA.API.Harmony;
 #pragma warning disable CS0649, CS0169, CS0414
 
 class Request_GetAllPatchedMethods : HarmonyRequest {
-    public bool clearCache;
+    public bool returnCached;
 
     protected override void processInternal(){
-        if( clearCache ){
-            patchCache.Clear();
-            fillCache();
-        }
-
-        var patches = patchCache.Values
+        var patches = (returnCached ? patchCache : readPatches()).Values
             .OrderBy(p => p.originalMethod.DeclaringType.ToString())
             .ThenBy(p => p.originalMethod.Name);
 
@@ -32,12 +27,7 @@ class Request_GetAllPatchedMethods : HarmonyRequest {
                 doc.Add(x_method);
             }
 
-            x_method.Add(new XElement("Patch",
-                        new XAttribute("PatchMethod", p.patchMethod.Name),
-                        new XAttribute("Owner", p.owner),
-                        new XAttribute("PatchClass", p.patchMethod.DeclaringType.ToString()),
-                        new XAttribute("hash", p.Hash.ToString("x8"))
-                        ));
+            x_method.Add(p.to_xml());
         }
     }
 }

@@ -14,7 +14,7 @@ class Request_UnpatchAll : HarmonyRequest {
             throw new ArgumentException("Owner is not set");
         }
 
-        var harmony = new HarmonyLib.Harmony("YADA");
+        var harmony = new HarmonyLib.Harmony(Owner);
         harmony.UnpatchAll(Owner);
     }
 }

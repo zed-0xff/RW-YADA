@@ -9,12 +9,14 @@ namespace YADA.API.Harmony;
 #pragma warning disable CS0649, CS0169, CS0414
 
 class Request_Unpatch : HarmonyRequest {
-    public string Hash;
+    public List<string> Hashes;
 
     protected override void processInternal(){
-        PatchInfo patch = patchCache[Convert.ToInt32(Hash, 16)];
+        foreach( string Hash in Hashes ){
+            PatchInfo patch = patchCache[Convert.ToInt32(Hash, 16)];
 
-        var harmony = new HarmonyLib.Harmony(patch.owner);
-        harmony.Unpatch(patch.originalMethod, patch.patchMethod);
+            var harmony = new HarmonyLib.Harmony(patch.owner);
+            harmony.Unpatch(patch.originalMethod, patch.patchMethod);
+        }
     }
 }

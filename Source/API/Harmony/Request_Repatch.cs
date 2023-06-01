@@ -10,29 +10,14 @@ namespace YADA.API.Harmony;
 #pragma warning disable CS0649, CS0169, CS0414
 
 class Request_Repatch : HarmonyRequest {
-    public string Hash;
+    public List<string> Hashes;
 
     protected override void processInternal(){
-        PatchInfo patch = patchCache[Convert.ToInt32(Hash, 16)];
+        foreach( string Hash in Hashes ){
+            PatchInfo patch = patchCache[Convert.ToInt32(Hash, 16)];
 
-        var harmony = new HarmonyLib.Harmony(patch.owner);
-
-        switch( patch.patchType ){
-            case HarmonyPatchType.Prefix:
-                harmony.Patch(patch.originalMethod, prefix: new HarmonyMethod(patch.patchMethod));
-                break;
-            case HarmonyPatchType.Postfix:
-                harmony.Patch(patch.originalMethod, postfix: new HarmonyMethod(patch.patchMethod));
-                break;
-            case HarmonyPatchType.Transpiler:
-                harmony.Patch(patch.originalMethod, transpiler: new HarmonyMethod(patch.patchMethod));
-                break;
-            case HarmonyPatchType.Finalizer:
-                harmony.Patch(patch.originalMethod, finalizer: new HarmonyMethod(patch.patchMethod));
-                break;
-            default:
-                Log.Warning("[?] unknwon patch type: " + patch.patchType);
-                break;
+            var harmony = new HarmonyLib.Harmony(patch.owner);
+            patch.Repatch(harmony);
         }
     }
 }
