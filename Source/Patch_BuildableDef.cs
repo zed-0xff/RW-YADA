@@ -28,6 +28,11 @@ static class Patch__BuildableDef__SpecialDisplayStats
                 yield return new StatDrawEntry( VDefOf.YADA_Debug_Graphic, "shaderType",
                         __instance.graphic.data.shaderType.defName,
                         __instance.graphic.data.shaderType.defName, 0);
+
+            if( __instance.designationCategory != null )
+                yield return new StatDrawEntry( VDefOf.YADA_Debug, "designationCategory",
+                        __instance.designationCategory.defName,
+                         __instance.designationCategory.ToString(), 0);
         }
     }
 }

@@ -20,6 +20,10 @@ static class Patch__ThingDef__SpecialDisplayStats
                         __instance.thingClass.ToString(),
                         __instance.thingClass.ToString(),
                         0);
+
+            yield return new StatDrawEntry( VDefOf.YADA_Debug_Graphic, "drawerType",
+                    __instance.drawerType.ToString(),
+                    __instance.drawerType.ToString(), 0);
         }
     }
 }
