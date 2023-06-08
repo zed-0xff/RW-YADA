@@ -6,7 +6,7 @@ namespace YADA.API.Harmony;
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414
 
-class Request_UnpatchAll : HarmonyRequest {
+class UnpatchAll : HarmonyRequest {
     public string Owner;
 
     protected override void processInternal(){

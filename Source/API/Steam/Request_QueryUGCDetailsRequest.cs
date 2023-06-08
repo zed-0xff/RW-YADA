@@ -11,7 +11,7 @@ namespace YADA.API;
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414
 
-class Request_QueryUGCDetailsRequest : SteamRequest {
+class QueryUGCDetailsRequest : SteamRequest {
     public List<PublishedFileId_t> PublishedFileIds;
     public bool ReturnAdditionalPreviews;
     public bool ReturnChildren;

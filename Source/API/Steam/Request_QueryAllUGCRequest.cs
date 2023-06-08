@@ -13,7 +13,7 @@ namespace YADA.API;
 
 // XXX unfinished
 
-class Request_CreateQueryAllUGCRequest : SteamRequest {
+class CreateQueryAllUGCRequest : SteamRequest {
     // https://partner.steamgames.com/doc/api/ISteamUGC#EUGCQuery
     public EUGCQuery eQueryType;
     // https://partner.steamgames.com/doc/api/ISteamUGC#EUGCMatchingUGCType
