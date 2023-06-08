@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <YADA.PatchDef>
+    <defName>YADA_constantSleep</defName>
+    <label>Force constant sleep</label>
+
+    <className>Need</className>
+    <methodName>get_CurLevel</methodName>
+    <postfix>
+      <arguments>
+        <li>ref __result</li>
+        <li>__instance</li>
+      </arguments>
+      <opcodes>
+        <li>Ldarg_1</li>
+        <li>Isinst RimWorld.Need_Rest</li>
+        <li>Brfalse_S l1</li>
+        <li>Ldarg_0</li>
+        <li>Ldc_R4 0.2</li>
+        <li>Stind_R4</li>
+        <li>l1:</li>
+      </opcodes>
+    </postfix>
+
+    <debugSettingsCheckbox/>
+  </YADA.PatchDef>
+
+</Defs>

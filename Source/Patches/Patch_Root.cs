@@ -9,7 +9,7 @@ static class Patch__Root__OnGUI {
         LogOverlay.drawn = false;
     }
     static void Postfix(){
-        if( !LogOverlay.drawn ){
+        if( !LogOverlay.drawn && ModConfig.Settings.drawLogOverlay ){
             LogOverlay.Draw();
         }
     }

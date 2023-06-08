@@ -8,7 +8,7 @@ public static class Expect {
         if( a != b ){
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[!] " + a + " != " + b);
-            Debug.Assert(false);
+            System.Environment.Exit(1);
         }
     }
 
@@ -21,7 +21,7 @@ public static class Expect {
             if( dd != null ){
                 dd();
             }
-            Debug.Assert(false);
+            System.Environment.Exit(1);
         }
     }
 
@@ -29,7 +29,7 @@ public static class Expect {
         if( a != null ){
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[!] " + msg + " is NOT NULL");
-            Debug.Assert(false);
+            System.Environment.Exit(1);
         }
     }
 
@@ -37,7 +37,7 @@ public static class Expect {
         if( a == null ){
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[!] " + msg + " is NULL");
-            Debug.Assert(false);
+            System.Environment.Exit(1);
         }
     }
 }

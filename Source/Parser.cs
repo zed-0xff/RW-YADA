@@ -14,6 +14,7 @@ public class Parser {
 
     public List<Type> argTypes = new List<Type>();
     public List<string> argNames = new List<string>();
+    Dictionary <string, Label> labels = new Dictionary<string, Label>();
 
     public string error;
 
@@ -75,6 +76,7 @@ public class Parser {
             il.Emit(opcode, mi);
             return;
         }
+
         if( opcode == OpCodes.Isinst ){
             Type t = AccessTools.TypeByName(s);
             if( t == null ){
@@ -84,6 +86,24 @@ public class Parser {
             il.Emit(opcode, t);
             return;
         }
+
+        string ops = opcode.ToString();
+        if( ops[0] == 'b' && ops != "box" && ops != "break" ){
+            // all jumps: beq, bge, br, brfalse, ...
+            Label label;
+            if( !labels.TryGetValue(s, out label) ){
+                label = labels[s] = il.DefineLabel();
+            }
+            il.Emit(opcode, label);
+            return;
+        }
+
+        // not sure if it's correct for all opcodes, but for Ldc it is
+        if( ops.EndsWith(".r4") ){
+            il.Emit(opcode, float.Parse(s));
+            return;
+        }
+
         error = opcode + ": don't know how to parse arg";
     }
 
@@ -93,6 +113,16 @@ public class Parser {
             if( a.Count() < 1 || a.Count() > 2 ){
                 error = "cannot parse opcode: " + s;
                 return false;
+            }
+
+            if( s.EndsWith(":") ){
+                string labelName = s.TrimEnd(':');
+                Label label;
+                if( !labels.TryGetValue(labelName, out label) ){
+                    label = labels[labelName] = il.DefineLabel();
+                }
+                il.MarkLabel(labels[labelName]);
+                continue;
             }
 
             var fi = typeof(OpCodes).GetField(a[0], BindingFlags.Public | BindingFlags.Static);

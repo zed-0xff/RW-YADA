@@ -8,9 +8,9 @@ end
 
 desc "test"
 task :test do
-  system "dotnet build . --nologo -v q", exception: true
+  system "dotnet build . --debug --nologo -v q", exception: true
   try_run "./bin/Debug/Test"
-  try_run "./bin/Debug/Test.exe", prefix:"mono "
+  try_run "./bin/Debug/Test.exe", prefix: "mono "
 end
 
 desc "clean"

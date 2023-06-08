@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <LangVersion>latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -24,6 +24,7 @@
 
   <ItemGroup>
       <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+      <PackageReference Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net472' Or '$(TargetFramework)'=='net48'">
       <Reference Include="System.Net.Http" />

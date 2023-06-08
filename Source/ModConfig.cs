@@ -27,6 +27,7 @@ public class YADASettings : ModSettings {
     }
 
     public bool drawLogOverlay = false;
+    public bool drawLogOverlayWhileLoading = true;
     public int logX = 8;
     public int logY = 105;
     public int logW = 1024;
@@ -49,6 +50,7 @@ public class YADASettings : ModSettings {
 
     public override void ExposeData() {
         Scribe_Values.Look(ref drawLogOverlay, "drawLogOverlay", false);
+        Scribe_Values.Look(ref drawLogOverlayWhileLoading, "drawLogOverlayWhileLoading", true);
         Scribe_Values.Look(ref logX, "log.x", 8);
         Scribe_Values.Look(ref logY, "log.y", 105);
         Scribe_Values.Look(ref logW, "log.width", 1024);
@@ -332,7 +334,8 @@ public class ModConfig : Mod {
         l.Begin(inRect);
 
         DrawKeyEntry(VDefOf.YADA_ToggleDebugLog, l.GetRect(34f), "Hotkey (default is \"§\")");
-        l.CheckboxLabeled("Draw log overlay", ref Settings.drawLogOverlay);
+        l.CheckboxLabeled("Draw log overlay in game", ref Settings.drawLogOverlay);
+        l.CheckboxLabeled("Draw log overlay on loading/main screens", ref Settings.drawLogOverlayWhileLoading);
 
         l.Label("X: " + Settings.logX); Settings.logX = (int)l.Slider(Settings.logX, 0, UI.screenWidth - 100);
         l.Label("Y: " + Settings.logY); Settings.logY = (int)l.Slider(Settings.logY, 0, UI.screenHeight - 100);

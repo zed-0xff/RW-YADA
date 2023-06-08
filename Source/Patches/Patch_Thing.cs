@@ -13,6 +13,10 @@ static class Patch__Thing__SpecialDisplayStats
             yield return x;
         }
         if( Prefs.DevMode ){
+            yield return new StatDrawEntry( VDefOf.YADA_Debug, "ThingID",
+                    __instance.ThingID,
+                    __instance.ThingID, 0);
+
             if( __instance.Graphic != null )
                 yield return new StatDrawEntry( VDefOf.YADA_Debug_Graphic, "class",
                         __instance.Graphic.GetType().Name,

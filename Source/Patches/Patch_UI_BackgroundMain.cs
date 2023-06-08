@@ -7,6 +7,8 @@ namespace YADA;
 [HarmonyPatch(typeof(UI_BackgroundMain), nameof(UI_BackgroundMain.BackgroundOnGUI))]
 static class Patch__UI_BackgroundMain__BackgroundOnGUI {
     static void Postfix(){
-        LogOverlay.Draw();
+        if( ModConfig.Settings.drawLogOverlayWhileLoading ){
+            LogOverlay.Draw();
+        }
     }
 }

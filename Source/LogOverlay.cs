@@ -12,7 +12,6 @@ class LogOverlay {
     public static void Draw() {
         drawn = true; // like not actually drawn, but was supposed to
 
-        if( !ModConfig.Settings.drawLogOverlay ) return;
         if( Event.current.type != EventType.Repaint ) return;
 
         Rect viewRect = new Rect(
