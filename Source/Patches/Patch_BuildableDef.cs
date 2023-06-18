@@ -33,6 +33,10 @@ static class Patch__BuildableDef__SpecialDisplayStats
                 yield return new StatDrawEntry( VDefOf.YADA_Debug, "designationCategory",
                         __instance.designationCategory.defName,
                          __instance.designationCategory.ToString(), 0);
+
+                yield return new StatDrawEntry( VDefOf.YADA_Debug, "altitudeLayer",
+                        __instance.altitudeLayer.ToString(),
+                        __instance.altitudeLayer.ToString(), 0);
         }
     }
 }

@@ -9,10 +9,12 @@ namespace YADA;
 static class Patch__Thing__SpecialDisplayStats
 {
     static IEnumerable<StatDrawEntry> Postfix(IEnumerable<StatDrawEntry> stats, Thing __instance){
+        if( stats == null ) yield break;
+
         foreach( var x in stats ){
             yield return x;
         }
-        if( Prefs.DevMode ){
+        if( Prefs.DevMode && __instance != null ){
             yield return new StatDrawEntry( VDefOf.YADA_Debug, "ThingID",
                     __instance.ThingID,
                     __instance.ThingID, 0);
@@ -24,14 +26,3 @@ static class Patch__Thing__SpecialDisplayStats
         }
     }
 }
-
-//[HarmonyPatch(typeof(Thing), nameof(Thing.SpawnSetup))]
-//static class Patch__Thing__VerboseLoad
-//{
-//    static void Prefix(Thing __instance, bool respawningAfterLoad){
-//        // TODO: config
-//        if( Prefs.DevMode && respawningAfterLoad ){
-//            Log.Message("[d] SpawnSetup: " + __instance);
-//        }
-//    }
-//}

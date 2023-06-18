@@ -9,10 +9,12 @@ namespace YADA;
 static class Patch__ThingDef__SpecialDisplayStats
 {
     static IEnumerable<StatDrawEntry> Postfix(IEnumerable<StatDrawEntry> stats, ThingDef __instance){
+        if( stats == null ) yield break;
+
         foreach( var x in stats ){
             yield return x;
         }
-        if( Prefs.DevMode ){
+        if( Prefs.DevMode && __instance != null ){
             if( __instance.thingClass != null )
                 yield return new StatDrawEntry(
                         VDefOf.YADA_Debug,
