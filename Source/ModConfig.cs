@@ -43,7 +43,7 @@ public class YADASettings : ModSettings {
     public bool harmonyDebugLocal = false;
     public bool harmonyDebugGlobal = false;
 
-    public string textureSavePath = GenFilePaths.SaveDataFolderPath;
+    public string textureSavePath = GenFilePaths.ScreenshotFolderPath;
 
     public string tools_className = "Page_ModsConfig";
     public string tools_methodName = "StorytellerUtility.DefaultThreatPointsNow";

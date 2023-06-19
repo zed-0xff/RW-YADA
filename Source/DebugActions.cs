@@ -7,9 +7,32 @@ using Verse;
 namespace YADA;
 
 public static class DebugActions {
+    [DebugAction("YADA", "Screenshot..", false, false, false, 0, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+    static void Screenshot(){
+        DebugToolsGeneral.GenericRectTool("Screenshot", delegate(CellRect cellRect)
+                {
+                var uiRect = cellRect.BottomLeft.ToUIRect().Union(cellRect.TopRight.ToUIRect());
+                var p1 = UnityEngine.GUIUtility.GUIToScreenPoint(uiRect.min);
+                var p2 = UnityEngine.GUIUtility.GUIToScreenPoint(uiRect.max);
+                var scrRect = new UnityEngine.Rect(p1, p2-p1);
+                ScreenshotMaker.EnqueueShot(scrRect);
+                });
+    }
+
+    [DebugAction("YADA", "Screenshot w/o terrain..", false, false, false, 0, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+    static void ScreenshotNoTerrain(){
+        DebugToolsGeneral.GenericRectTool("Screenshot", delegate(CellRect cellRect)
+                {
+                var uiRect = cellRect.BottomLeft.ToUIRect().Union(cellRect.TopRight.ToUIRect());
+                var p1 = UnityEngine.GUIUtility.GUIToScreenPoint(uiRect.min);
+                var p2 = UnityEngine.GUIUtility.GUIToScreenPoint(uiRect.max);
+                var scrRect = new UnityEngine.Rect(p1, p2-p1);
+                ScreenshotMaker.EnqueueShot(scrRect, hideTerrain: true);
+                });
+    }
 
     [DebugAction("YADA", "Move things..", false, false, false, 0, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-    private static void CreateBabyFromParents()
+    static void MoveThings()
     {
         DebugTool tool = null;
         IEnumerable<Thing> things = null;
@@ -33,7 +56,7 @@ public static class DebugActions {
     }
 
     [DebugAction("YADA", "Spawn random thing", false, false, false, 0, false, actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-    private static void SpawnRandomThing()
+    static void SpawnRandomThing()
     {
         var variants = (from x in DebugThingPlaceHelper.TryPlaceOptionsForStackCount(1, direct: false) select x).ToList();
         Random rand = new Random();
