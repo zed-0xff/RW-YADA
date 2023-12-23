@@ -3,7 +3,7 @@ using System.Threading;
 using Steamworks;
 using UnityEngine;
 
-namespace YADA.API;
+namespace YADA.API.Steam;
 
 abstract class SteamRequest : Request {
     protected const int TIMEOUT_MS = 15000;

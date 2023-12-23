@@ -9,9 +9,9 @@ namespace YADA.API.Steam;
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414
 
-class SetItemDescription : SteamRequest {
+class AddItemPreviewFile : SteamRequest {
     public PublishedFileId_t PublishedFileId = PublishedFileId_t.Invalid;
-    public string Description;
+    public string PreviewFile;
 
     protected override CallResult processSteamInternal(){
         if( PublishedFileId == PublishedFileId_t.Invalid ){
@@ -19,8 +19,8 @@ class SetItemDescription : SteamRequest {
         }
 
         UGCUpdateHandle_t handle = SteamUGC.StartItemUpdate(SteamUtils.GetAppID(), PublishedFileId);
-        if( !SteamUGC.SetItemDescription(handle, Description) ){
-            throw new ArgumentException("SteamUGC.SetItemDescription() returned false");
+        if( !SteamUGC.AddItemPreviewFile(handle, PreviewFile, EItemPreviewType.k_EItemPreviewType_Image) ){
+            throw new ArgumentException("SteamUGC.AddItemPreviewFile() returned false");
         }
         SteamAPICall_t hAPICall = SteamUGC.SubmitItemUpdate(handle, null);
 
@@ -36,3 +36,4 @@ class SetItemDescription : SteamRequest {
         return cr;
     }
 }
+

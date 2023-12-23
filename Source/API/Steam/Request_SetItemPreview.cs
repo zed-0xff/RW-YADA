@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using System;
 using Verse;
 
-namespace YADA.API;
+namespace YADA.API.Steam;
 
 // Field '...' is never assigned to / never used
 #pragma warning disable CS0649, CS0169, CS0414
