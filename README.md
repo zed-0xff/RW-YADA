@@ -1,5 +1,18 @@
 # YADA: Yet Another Dev Assistant
 
+Supports **RimWorld 1.4** and **1.5**. Build for one or both:
+
+```bash
+cd Source
+# 1.4 (default) → outputs to 1.4/Assemblies/
+dotnet build -c Release
+
+# 1.5 → outputs to 1.5/Assemblies/
+dotnet build -c Release -p:RimWorldVersion=1.5
+```
+
+For a single mod that works in both games, run both commands so the mod has `1.4/Assemblies/YADA.dll` and `1.5/Assemblies/YADA.dll`; shared content (About, Defs, etc.) stays at the repo root.
+
 ## 0. XML Harmony patches!
 
 So simple!

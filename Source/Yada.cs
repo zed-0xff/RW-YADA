@@ -3,6 +3,9 @@ using RimWorld.Planet;
 using System.Reflection;
 using System;
 using HarmonyLib;
+#if RW15
+using LudeonTK;
+#endif
 
 namespace YADA;
 
@@ -40,7 +43,11 @@ class Yada : WorldComponent {
     }
 
     public static FieldInfo fiDebugWindowsOpener = AccessTools.Field(typeof(UIRoot), "debugWindowOpener");
+#if RW15
+    private static FieldInfo fiCanAutoOpen = AccessTools.Field(typeof(LudeonTK.EditWindow_Log), "canAutoOpen");
+#else
     private static FieldInfo fiCanAutoOpen = AccessTools.Field(typeof(EditWindow_Log), "canAutoOpen");
+#endif
 
     public override void ExposeData()
     {

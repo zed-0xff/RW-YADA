@@ -2,10 +2,17 @@ using HarmonyLib;
 using Verse;
 using System.Collections.Generic;
 using System.Reflection;
+#if RW15
+using LudeonTK;
+#endif
 
 namespace YADA;
 
 static class Patch_DebugTabMenu_Settings {
+#if RW15
+    static readonly MethodInfo AddNodeMi = AccessTools.Method(typeof(DebugTabMenu_Settings), "AddNode");
+#endif
+
     // add custom settings to debug menu
     [HarmonyPatch(typeof(DebugTabMenu_Settings), "InitActions")]
     static class Patch_InitActions {
@@ -16,7 +23,11 @@ static class Patch_DebugTabMenu_Settings {
                 if( c?.value != null ){
                     category = c.value;
                 }
+#if RW15
+                AddNodeMi?.Invoke(__instance, new object[] { fi, category });
+#else
                 __instance.AddNode(fi, category);
+#endif
             }
         }
     }

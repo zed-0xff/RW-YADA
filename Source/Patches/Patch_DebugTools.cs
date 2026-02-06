@@ -1,6 +1,9 @@
 using HarmonyLib;
 using RimWorld;
 using Verse;
+#if RW15
+using LudeonTK;
+#endif
 
 namespace YADA;
 

@@ -6,11 +6,17 @@
     <LangVersion>latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <OutputPath>../Assemblies</OutputPath>
+    <!-- Build for 1.4 by default; use -p:RimWorldVersion=1.5 for 1.5. Output goes to 1.4/Assemblies or 1.5/Assemblies for multi-version mod. -->
+    <RimWorldVersion Condition="'$(RimWorldVersion)' == ''">1.4</RimWorldVersion>
+    <OutputPath>../$(RimWorldVersion)/Assemblies</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>True</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RimWorldVersion)' == '1.5'">
+    <DefineConstants>$(DefineConstants);RW15</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -23,8 +29,12 @@
       <PrivateAssets>all</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="Krafs.Rimworld.Ref">
+    <PackageReference Include="Krafs.Rimworld.Ref" Condition="'$(RimWorldVersion)' != '1.5'">
       <Version>1.4.*</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Krafs.Rimworld.Ref" Condition="'$(RimWorldVersion)' == '1.5'">
+      <Version>1.5.*</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Lib.Harmony">

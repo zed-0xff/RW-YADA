@@ -1,5 +1,8 @@
 using HarmonyLib;
 using Verse;
+#if RW15
+using LudeonTK;
+#endif
 
 namespace YADA;
 
