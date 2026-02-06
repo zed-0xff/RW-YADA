@@ -1,15 +1,34 @@
+GIT
+  remote: https://github.com/zed-0xff/rimtool
+  revision: ca68d34647f3451b328fcc4c3afea4209bb39a5d
+  specs:
+    rimtool (0.1.0)
+      awesome_print
+      md_to_bbcode
+      nokogiri
+      nori
+
 GEM
   remote: https://rubygems.org/
   specs:
+    awesome_print (1.9.2)
+    bigdecimal (4.0.1)
     md_to_bbcode (2.0.0)
       redcarpet (~> 3.5)
-    redcarpet (3.6.0)
+    nokogiri (1.17.2-arm64-darwin)
+      racc (~> 1.4)
+    nori (2.7.1)
+      bigdecimal
+    racc (1.8.1)
+    redcarpet (3.6.1)
 
 PLATFORMS
   arm64-darwin-21
+  arm64-darwin-24
 
 DEPENDENCIES
   md_to_bbcode
+  rimtool!
 
 BUNDLED WITH
-   2.3.22
+   2.4.22
