@@ -14,6 +14,17 @@ namespace YADA;
 static class Patch_DrawHediffRow {
     static readonly MethodInfo m_getShowDevGizmos = AccessTools.PropertyGetter(typeof(DebugSettings), nameof(DebugSettings.ShowDevGizmos));
     static readonly MethodInfo m_1 = AccessTools.Method(typeof(Patch_DrawHediffRow), nameof(Patch_DrawHediffRow.m1));
+    // Nested type name is compiler-generated and varies by game version (e.g. c__DisplayClass31_1); resolve by presence of iconsRect
+    static readonly FieldInfo f_iconsRect = FindIconsRectField();
+
+    static FieldInfo FindIconsRectField() {
+        foreach (var nt in typeof(HealthCardUtility).GetNestedTypes(AccessTools.all)) {
+            if (!nt.Name.Contains("c__DisplayClass")) continue;
+            var f = AccessTools.Field(nt, "iconsRect");
+            if (f != null) return f;
+        }
+        return null;
+    }
 
     static void m1(List<GenUI.AnonymousStackElement> list, Hediff localHediff, Rect iconsRect){
         if ( localHediff == null || iconsRect == null ) return;
@@ -66,13 +77,13 @@ static class Patch_DrawHediffRow {
                         state++;
                     break;
                 case 1:
-                    if( code.opcode == OpCodes.Callvirt ){
-                        // callvirt virtual System.Void System.Collections.Generic.List`1<Verse.AnonymousStackElement>::Add(Verse.AnonymousStackElement item)
-                        if( code.operand.ToString() == "Void Add(AnonymousStackElement)") {
+                    if( code.opcode == OpCodes.Callvirt && f_iconsRect != null ){
+                        // callvirt List<AnonymousStackElement>.Add
+                        if( code.operand?.ToString() == "Void Add(AnonymousStackElement)") {
                             yield return new CodeInstruction(OpCodes.Ldloc_S, 18); // list
                             yield return new CodeInstruction(OpCodes.Ldloc_S, 14); // localHediff
-                            yield return new CodeInstruction(OpCodes.Ldloc_S, 12); // instance of c__DisplayClass31_1
-                            yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(HealthCardUtility).GetNestedTypes(AccessTools.all).First(x => x.Name.Contains("c__DisplayClass31_1")), "iconsRect"));
+                            yield return new CodeInstruction(OpCodes.Ldloc_S, 12); // display class instance
+                            yield return new CodeInstruction(OpCodes.Ldfld, f_iconsRect);
                             yield return new CodeInstruction(OpCodes.Call, m_1);
                             state = -1; // patched
                         } else {

@@ -10,7 +10,9 @@ using LudeonTK;
 namespace YADA;
 
 public static class DebugActions {
-#if RW15
+#if RW16
+    [DebugAction("YADA", "Screenshot..", false, false, false, false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+#elif RW15
     [DebugAction("YADA", "Screenshot..", false, false, false, false, 0, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
 #else
     [DebugAction("YADA", "Screenshot..", false, false, false, 0, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
@@ -30,7 +32,9 @@ public static class DebugActions {
                 });
     }
 
-#if RW15
+#if RW16
+    [DebugAction("YADA", "Screenshot w/o terrain..", false, false, false, false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+#elif RW15
     [DebugAction("YADA", "Screenshot w/o terrain..", false, false, false, false, 0, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
 #else
     [DebugAction("YADA", "Screenshot w/o terrain..", false, false, false, 0, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
@@ -50,7 +54,9 @@ public static class DebugActions {
                 });
     }
 
-#if RW15
+#if RW16
+    [DebugAction("YADA", "Move things..", false, false, false, false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+#elif RW15
     [DebugAction("YADA", "Move things..", false, false, false, false, 0, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
 #else
     [DebugAction("YADA", "Move things..", false, false, false, 0, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
@@ -78,7 +84,9 @@ public static class DebugActions {
         }
     }
 
-#if RW15
+#if RW16
+    [DebugAction("YADA", "Spawn random thing", false, false, false, false, false, actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+#elif RW15
     [DebugAction("YADA", "Spawn random thing", false, false, false, false, 0, actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
 #else
     [DebugAction("YADA", "Spawn random thing", false, false, false, 0, false, actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
@@ -91,7 +99,9 @@ public static class DebugActions {
         variants[i].action();
     }
 
-#if RW15
+#if RW16
+    [DebugAction("YADA", "Spawn filtered things...", false, false, false, false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+#elif RW15
     [DebugAction("YADA", "Spawn filtered things...", false, false, false, false, 0, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
 #else
     [DebugAction("YADA", "Spawn filtered things...", false, false, false, 0, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]

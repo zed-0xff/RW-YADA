@@ -101,6 +101,8 @@ public class ModConfig : Mod {
         }
         Harmony harmony = new Harmony("YADA");
         harmony.PatchAll();
+        Patch_Widgets.ApplyIfTargetExists(harmony);
+        YADA.API.Steam.SteamRequest.MainThread = System.Threading.Thread.CurrentThread;
     }
 
     public override void DoSettingsWindowContents(Rect inRect) {
