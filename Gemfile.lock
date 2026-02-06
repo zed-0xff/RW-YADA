@@ -20,6 +20,7 @@ GEM
     nori (2.7.1)
       bigdecimal
     racc (1.8.1)
+    rake (13.3.1)
     redcarpet (3.6.1)
 
 PLATFORMS
@@ -28,6 +29,7 @@ PLATFORMS
 
 DEPENDENCIES
   md_to_bbcode
+  rake (~> 13.3)
   rimtool!
 
 BUNDLED WITH
