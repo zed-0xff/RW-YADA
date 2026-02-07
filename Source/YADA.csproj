@@ -6,8 +6,7 @@
     <LangVersion>latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <!-- Build for 1.4 by default; use -p:RimWorldVersion=1.5 or 1.6 for newer. Output goes to 1.4/Assemblies, 1.5/Assemblies, or 1.6/Assemblies. -->
-    <RimWorldVersion Condition="'$(RimWorldVersion)' == ''">1.4</RimWorldVersion>
+    <RimWorldVersion Condition="'$(RimWorldVersion)' == ''">1.6</RimWorldVersion>
     <OutputPath>../$(RimWorldVersion)/Assemblies</OutputPath>
   </PropertyGroup>
 
