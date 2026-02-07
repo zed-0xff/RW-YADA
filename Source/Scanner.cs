@@ -43,7 +43,7 @@ public class Scanner {
         foreach( FileInfo fi in dir.GetFiles(rimignoreFname) ){
             localIgnores.AddRange(ReadIgnores(fi));
         }
-        Dictionary<string, FileSystemInfo> files = new Dictionary<string, FileSystemInfo>();
+        Dictionary<string, FileSystemInfo> files = new Dictionary<string, FileSystemInfo>(StringComparer.OrdinalIgnoreCase);
         foreach( var fi in dir.GetFileSystemInfos() ){
             files[fi.Name] = fi;
         }
