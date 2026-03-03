@@ -27,9 +27,14 @@ abstract class SteamRequest : Request {
             if (onMain) {
                 Application.runInBackground = true; // or SteamUGC reqs won't run while in bg
             }
-            if( !autoEvent.WaitOne(TIMEOUT_MS) ){
-                finalize();
-                throw new TimeoutException();
+            // Pump Steam callbacks on this thread; they only run when RunCallbacks() is invoked.
+            var deadline = DateTime.UtcNow.AddMilliseconds(TIMEOUT_MS);
+            while( !autoEvent.WaitOne(100) ){
+                SteamAPI.RunCallbacks();
+                if( DateTime.UtcNow >= deadline ){
+                    finalize();
+                    throw new TimeoutException();
+                }
             }
         }
 
